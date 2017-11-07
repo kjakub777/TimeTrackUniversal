@@ -1,10 +1,269 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
-              android:orientation="vertical" 
-              android:layout_width="match_parent" 
-              android:layout_height="match_parent">
-  <Button android:id="@+id/myButton" 
-          android:layout_width="match_parent" 
-          android:layout_height="wrap_content" 
-          android:text="@string/hello" />
-</LinearLayout>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:minWidth="25px"
+    android:minHeight="25px"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:id="@+id/scrollViewMain"
+    tools:gridSpec="1|8|#0093eeff|K:#ee8700ff:16,l:72,l|S:#83ee00ff:16,0,l:16,56,l">
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/Root"
+        android:background="#828282"
+        android:weightSum="10"
+        android:gravity="fill">
+        <LinearLayout
+            android:orientation="horizontal"
+            android:minWidth="25px"
+            android:minHeight="25px"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="3"
+            android:id="@+id/ClockInAndOutLayOut"
+            android:background="@android:color/holo_green_light"
+            android:layout_weight="2">
+            <Button
+                android:text="Clock IN"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/btnClockIn"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:layout_weight="1"
+                android:textColor="@android:color/holo_green_light"
+                android:background="@android:drawable/alert_dark_frame" />
+            <Switch
+                android:text="For Real?"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/ForReal"
+                android:layout_weight="1"
+                android:layout_gravity="center_horizontal"
+                android:textAlignment="center"
+                android:paddingLeft="1sp"
+                android:background="@android:drawable/alert_dark_frame"
+                android:backgroundTint="#ff696969"
+                android:backgroundTintMode="add" />
+            <Button
+                android:text="Clock OUT"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:id="@+id/btnClockOut"
+                android:layout_weight="1"
+                android:textColor="@android:color/holo_green_light"
+                android:textAlignment="center"
+                android:background="@android:drawable/alert_dark_frame" />
+        </LinearLayout>
+        <LinearLayout
+            android:orientation="vertical"
+            android:minWidth="25px"
+            android:minHeight="25px"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/TimeClockOut"
+            android:layout_weight="1">
+            <TextView
+                android:id="@+id/txtLastPunch"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="||||||"
+                android:textAlignment="center"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@android:color/holo_green_light"
+                android:gravity="center"
+                android:scrollHorizontally="true"
+                android:scrollbars="vertical"
+                android:lines="2"
+                android:maxLines="2" />
+        </LinearLayout>
+        <LinearLayout
+            android:orientation="vertical"
+            android:minWidth="25px"
+            android:minHeight="25px"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/OutputText"
+            android:padding="2sp"
+            android:background="@android:color/transparent">
+            <TextView
+                android:text="....&gt;"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/txtMainOut"
+                android:gravity="center"
+                android:textColor="@android:color/background_dark"
+                android:background="#97FFC839"
+                android:padding="2sp"
+                android:layout_weight="1"
+                android:alpha="1" />
+            <LinearLayout
+                android:orientation="horizontal"
+                android:minWidth="25px"
+                android:minHeight="25px"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/LabelsForHourDataLayout"
+                android:background="#4D4DFF"
+                android:alpha="6"
+                android:weightSum="3"
+                android:layout_marginLeft="2sp"
+                android:layout_marginRight="2sp"
+                android:layout_weight="1">
+                <TextView
+                    android:text="Total hours for week"
+                    android:id="@+id/lblWeekTotalHours"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="3sp"
+                    android:editable="false"
+                    android:background="#DDDDA9"
+                    android:textColor="#4D4D3F"
+                    android:layout_weight="1"
+                    android:padding="2sp" />
+                <TextView
+                    android:text="Total hours for month"
+                    android:id="@+id/lblMonthTotalHours"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:editable="false"
+                    android:layout_margin="3sp"
+                    android:background="#DDDDA9"
+                    android:textColor="#4D4D3F"
+                    android:layout_weight="1"
+                    android:padding="2sp" />
+                <TextView
+                    android:text="Gross pay for month"
+                    android:id="@+id/lblGrossPayMonth"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:editable="false"
+                    android:layout_margin="3sp"
+                    android:background="#DDDDA9"
+                    android:textColor="#4D4D3F"
+                    android:layout_weight="1"
+                    android:padding="2sp" />
+            </LinearLayout>
+            <LinearLayout
+                android:orientation="horizontal"
+                android:minWidth="25px"
+                android:minHeight="25px"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/ValuesForHourDataLayout"
+                android:padding="5sp"
+                android:weightSum="3"
+                android:background="#4D4DFF"
+                android:layout_gravity="center">
+                <TextView
+                    android:inputType="numberDecimal"
+                    android:id="@+id/txtWeekTotalHours"
+                    android:background="#95BFD4"
+                    android:text="000"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="2sp" />
+                <TextView
+                    android:inputType="numberDecimal"
+                    android:id="@+id/txtMonthTotalHours"
+                    android:text="000"
+                    android:gravity="center"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="#95BFD4"
+                    android:layout_marginEnd="2sp" />
+                <TextView
+                    android:inputType="numberDecimal"
+                    android:id="@+id/txtGrossPay"
+                    android:text="000"
+                    android:gravity="center"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="#95BFD4" />
+            </LinearLayout>
+        </LinearLayout>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:minWidth="25px"
+            android:minHeight="25px"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/buttons1">
+            <Button
+                android:text="Change Emails"
+                android:id="@+id/btnChangeEmails"
+                android:visibility="visible"
+                android:gravity="center_vertical"
+                android:textAllCaps="false"
+                android:background="@android:drawable/alert_dark_frame"
+                android:drawableStart="@android:drawable/ic_lock_lock"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+            <Button
+                android:text="Exit"
+                android:id="@+id/btnExit"
+                android:textAllCaps="false"
+                android:background="@android:drawable/alert_dark_frame"
+                android:drawableStart="@android:drawable/ic_menu_close_clear_cancel"
+                android:gravity="center_vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1" />
+            <Button
+                android:text="Add Punch Record"
+                android:id="@+id/btnAddPunch"
+                android:textAllCaps="false"
+                android:drawableStart="@android:drawable/ic_input_add"
+                android:background="@android:drawable/alert_dark_frame"
+                android:gravity="center_vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+        </LinearLayout>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/buttons2"
+            android:minHeight="25px">
+            <Button
+                android:text="Run SQL"
+                android:id="@+id/btnSqlQuery"
+                android:textAllCaps="false"
+                android:background="@android:drawable/alert_dark_frame"
+                android:drawableStart="@android:drawable/presence_online"
+                android:gravity="center_vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1" />
+            <Button
+                android:text="Edit Punch"
+                android:id="@+id/btnEditPunch"
+                android:textAllCaps="false"
+                android:drawableStart="@android:drawable/ic_menu_edit"
+                android:background="@android:drawable/alert_dark_frame"
+                android:gravity="center_vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1" />
+            <Button
+                android:text="History"
+                android:id="@+id/btnViewHistory"
+                android:textAllCaps="false"
+                android:background="@android:drawable/alert_dark_frame"
+                android:drawableStart="@android:drawable/ic_menu_view"
+                android:gravity="center_vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1" />
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

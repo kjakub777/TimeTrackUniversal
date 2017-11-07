@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:minWidth="25px"
+    android:minHeight="25px"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/scrollViewMain">
+  <LinearLayout
+      android:orientation="vertical"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent">
+    <LinearLayout
+   android:orientation="horizontal"
+   android:minWidth="25px"
+   android:minHeight="25px"
+   android:layout_width="match_parent"
+   android:layout_height="wrap_content"
+   android:id="@+id/DateSelectorButtons"
+   android:weightSum="4"
+   android:background="@android:color/holo_green_light">
+      <LinearLayout
+          android:orientation="vertical"
+          android:minWidth="25px"
+          android:minHeight="25px"
+          android:layout_width="wrap_content"
+          android:layout_height="match_parent"
+          android:id="@+id/DayMonthPickerButtonLayout"
+          android:layout_weight="1.5">
+        <Button
+            android:text="Pick Day"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/btnDayPicker"
+            android:textAllCaps="false" />
+        <Button
+            android:text="Pick Month"
+            android:id="@+id/btnMonthPicker"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:textAllCaps="false" />
+      </LinearLayout>
+      <LinearLayout
+          android:orientation="vertical"
+          android:minWidth="25px"
+          android:minHeight="25px"
+          android:layout_width="wrap_content"
+          android:layout_height="match_parent"
+          android:id="@+id/MonthYearDropLayout"
+          android:weightSum="4"
+          android:layout_weight="1.5">
+        <EditText
+            android:inputType="date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/dateTxtMonth"
+            android:layout_weight="1"
+            android:hint="Month #" />
+        <EditText
+            android:inputType="date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/dateTxtYear"
+            android:hint="Year"
+            android:layout_weight="1" />
+      </LinearLayout>
+      <LinearLayout
+          android:orientation="vertical"
+          android:minWidth="25px"
+          android:minHeight="25px"
+          android:layout_width="wrap_content"
+          android:layout_height="match_parent"
+          android:id="@+id/ToFromDateButtonLayout"
+          android:weightSum="2"
+          android:layout_weight="0.3"
+          android:gravity="right"
+          android:visibility="visible">
+        <Button
+            android:text="Change Pwd/Email"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/btnChangePassword"
+            android:layout_weight="0"
+            android:visibility="visible"
+            android:layout_margin="10px"
+            android:gravity="center_vertical"
+            android:textAllCaps="false" />
+        <Button
+            android:text="Select end date"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/btnToDate"
+            android:layout_weight="1"
+            android:visibility="visible" />
+      </LinearLayout>
+    </LinearLayout>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:minWidth="25px"
+        android:minHeight="25px"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/LabelsForHourDataLayout"
+        android:background="#4D4DFF"
+        android:alpha="6"
+        android:weightSum="3"
+        android:layout_marginLeft="2sp"
+        android:layout_marginRight="2sp"
+        android:layout_weight="1">
+      <TextView
+          android:text="Total hours for week"
+          android:id="@+id/lblWeekTotalHours"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:layout_margin="3sp"
+          android:editable="false"
+          android:background="#DDDDA9"
+          android:textColor="#4D4D3F"
+          android:layout_weight="1"
+          android:padding="2sp" />
+      <TextView
+          android:text="Total hours for month"
+          android:id="@+id/lblMonthTotalHours"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:editable="false"
+          android:layout_margin="3sp"
+          android:background="#DDDDA9"
+          android:textColor="#4D4D3F"
+          android:layout_weight="1"
+          android:padding="2sp" />
+      <TextView
+          android:text="Gross pay for month"
+          android:id="@+id/lblGrossPayMonth"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:editable="false"
+          android:layout_margin="3sp"
+          android:background="#DDDDA9"
+          android:textColor="#4D4D3F"
+          android:layout_weight="1"
+          android:padding="2sp" />
+    </LinearLayout>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:minWidth="25px"
+        android:minHeight="25px"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/ValuesForHourDataLayout"
+        android:padding="5sp"
+        android:weightSum="3"
+        android:background="#4D4DFF"
+        android:layout_marginLeft="2sp"
+        android:layout_marginRight="2sp"
+        android:layout_weight="1">
+      <TextView
+          android:inputType="numberDecimal"
+          android:id="@+id/txtWeekTotalHours"
+          android:background="#95BFD4"
+          android:text="000"
+          android:layout_width="wrap_content"
+          android:layout_height="match_parent"
+          android:layout_weight="1"
+          android:gravity="center"
+          android:layout_marginEnd="2sp" />
+      <TextView
+          android:inputType="numberDecimal"
+          android:id="@+id/txtMonthTotalHours"
+          android:text="000"
+          android:gravity="center"
+          android:layout_width="wrap_content"
+          android:layout_height="match_parent"
+          android:layout_weight="1"
+          android:background="#95BFD4"
+          android:layout_marginEnd="2sp" />
+      <TextView
+          android:inputType="numberDecimal"
+          android:id="@+id/txtGrossPay"
+          android:text="000"
+          android:gravity="center"
+          android:layout_width="wrap_content"
+          android:layout_height="match_parent"
+          android:layout_weight="1"
+          android:background="#95BFD4" />
+    </LinearLayout>
+  </LinearLayout>
+</ScrollView>

@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <string name="hello">Hello World, Click Me!</string>
-  <string name="app_name">ViewPagerTimeTracker</string>
+  <string name="app_name">Time Tracker Universal</string>
+  <string name="initialPay">17.5</string>
+  <string name="dbPath">/sdcard/HoursTracker/Database/</string>
+  <string name="from_email_address">kevin.jakub@newnetservices.net</string>
+  <!--<string name="to_email_address">janelle.swenson@newnetservices.net</string>-->
+  <string name="alter_email_address">kjakub777@gmail.com</string>
+  <string name="server">smtp.office365.com</string>
+  <string name="pass">KJkj!!21118777</string>
+  <string name="not_real_output">Not real</string>
+  <string name="real_output">CLOCKED!</string>
 </resources>

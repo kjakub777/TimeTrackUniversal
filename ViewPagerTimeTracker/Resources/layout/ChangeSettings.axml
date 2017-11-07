@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:minWidth="25px"
+    android:minHeight="25px"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/scrollView2"
+    tools:actionBarNavMode="tabs">
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/linearLayout1V"
+        android:weightSum="2"
+        tools:gridSpec="1|4|#0093eeff|K:#ee8700ff:72,l|S:#00ff40ff:16,0,l:16,56,l:16,0,r"
+        android:background="#F0A304"
+        android:scrollbarAlwaysDrawVerticalTrack="true"
+        android:scrollbars="vertical"
+        android:scrollbarThumbVertical="@android:drawable/status_bar_item_background"
+        android:scrollbarStyle="insideInset"
+        android:scrollbarSize="15sp">
+        <LinearLayout
+            android:orientation="vertical"
+            android:minWidth="25px"
+            android:minHeight="25px"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/linearLayout2V"
+            android:background="#0C788A"
+            android:layout_weight="2"
+            android:weightSum="2">
+            <LinearLayout
+                android:orientation="horizontal"
+                android:minWidth="25px"
+                android:minHeight="25px"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/linearLayout3H"
+                android:background="#0C788A"
+                android:layout_weight="1"
+                android:weightSum="2"
+                android:layout_marginBottom="0.0dp"
+                android:layout_marginTop="0.0dp">
+                <TextView
+                    android:text="Enter New Password"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/lblPass"
+                    android:layout_gravity="center_vertical"
+                    android:layout_margin="5px"
+                    android:textAlignment="center"
+                    android:gravity="center"
+                    android:elevation="10px"
+                    android:textColor="#B3E6EE"
+                    android:layout_weight="1.1" />
+                <EditText
+                    android:inputType="textPassword"
+                    android:id="@+id/pass1"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:layout_weight="0.9"
+                    android:layout_margin="5px"
+                    android:gravity="center"
+                    android:elevation="10px"
+                    android:textColor="#B3E6EE"
+                    android:background="#063C45" />
+            </LinearLayout>
+            <LinearLayout
+                android:orientation="horizontal"
+                android:minWidth="25px"
+                android:minHeight="25px"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/linearLayoutEmailH"
+                android:background="#0C788A"
+                android:layout_weight="1"
+                android:weightSum="2">
+                <TextView
+                    android:text="Enter New Email"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/lblEmail"
+                    android:layout_gravity="center_vertical"
+                    android:layout_margin="5px"
+                    android:textAlignment="center"
+                    android:gravity="center"
+                    android:elevation="10px"
+                    android:textColor="#B3E6EE"
+                    android:layout_weight="1.1" />
+                <EditText
+                    android:id="@+id/txtNewEmail"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:layout_weight="0.9"
+                    android:layout_margin="5px"
+                    android:gravity="center"
+                    android:elevation="10px"
+                    android:background="#063C45"
+                    android:textColor="#B3E6EE" />
+            </LinearLayout>
+        </LinearLayout>
+        <LinearLayout
+            android:orientation="vertical"
+            android:minWidth="25px"
+            android:minHeight="25px"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/linearLayoutEmail1V"
+            android:background="#0C788A"
+            android:layout_weight="2"
+            android:weightSum="2">
+            <TextView
+                android:text=".."
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/lblOut"
+                android:gravity="center"
+                android:textColor="#B3E6EE"
+                android:layout_weight="1"
+                android:background="#063C45"
+                android:elevation="10px"
+                android:padding="5sp" />
+            <TextView
+                android:text=".."
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/lblOutEmail"
+                android:gravity="center"
+                android:textColor="#B3E6EE"
+                android:background="#F5063C45"
+                android:layout_weight="1"
+                android:layout_margin="1px"
+                android:padding="5sp" />
+        </LinearLayout>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:minWidth="25px"
+            android:minHeight="25px"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/linearLayoutEmailV"
+            android:background="#0C788A"
+            android:weightSum="3">
+            <Button
+                android:text="Set password"
+                android:id="@+id/btnOk"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_margin="1px"
+                android:textAllCaps="false" />
+            <Button
+                android:text="Set to email"
+                android:id="@+id/btnOkEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_margin="1px"
+                android:gravity="center"
+                android:textAllCaps="false" />
+            <Button
+                android:text="Exit"
+                android:id="@+id/btnExitPass"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_margin="1px"
+                android:textAllCaps="false" />
+        </LinearLayout>
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:showDividers="none"
+            android:layout_margin="5sp"
+            android:weightSum="7"
+            android:layout_weight="1">
+            <LinearLayout
+                android:orientation="vertical"
+                android:minWidth="25px"
+                android:minHeight="25px"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/linearLayout1">
+                <TextView
+                    android:text="Enter Date mm/dd/yyyy"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/enterDatelbl"
+                    android:gravity="center"
+                    android:layout_weight="1"
+                    android:padding="5sp" />
+                <EditText
+                    android:inputType="date"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/dateDate"
+                    android:text="01/01/2018"
+                    android:gravity="center"
+                    android:layout_weight="1" />
+            </LinearLayout>
+            <LinearLayout
+                android:orientation="vertical"
+                android:minWidth="25px"
+                android:minHeight="25px"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/linearLayout2"
+                android:weightSum="3">
+                <TextView
+                    android:text="Enter Time IN"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/EnterTimeinlbl"
+                    android:gravity="center"
+                    android:layout_weight="1"
+                    android:padding="5sp" />
+                <TimePicker
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/timePickIn"
+                    android:layout_weight="1"
+                    android:padding="5sp"
+                    android:layout_marginRight="40dp"
+                    android:layout_marginLeft="40dp" />
+                <TextView
+                    android:text="Enter Time OUT"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/EnterTimeOutlbl"
+                    android:gravity="center"
+                    android:layout_weight="1"
+                    android:padding="5sp"
+                    android:layout_margin="15sp" />
+                <TimePicker
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/timePickOut"
+                    android:layout_weight="1"
+                    android:padding="5sp"
+                    android:layout_marginLeft="40dp"
+                    android:layout_marginRight="40dp" />
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:minWidth="25px"
+                    android:minHeight="25px"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/linearLayout3"
+                    android:layout_margin="15sp">
+                    <CheckBox
+                        android:text="Clock In"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:id="@+id/IsClockIn"
+                        android:checked="false"
+                        android:layout_weight="1"
+                        android:gravity="center" />
+                    <CheckBox
+                        android:text="Clock Out"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:id="@+id/IsClockOut"
+                        android:layout_weight="1"
+                        android:gravity="center" />
+                </LinearLayout>
+                <Button
+                    android:text="Enter"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/btnPunch"
+                    android:textAllCaps="false"
+                    android:layout_weight="1" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/punchOut"
+                    android:gravity="center"
+                    android:text="_____" />
+                <EditText
+                    android:inputType="textMultiLine"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/sqlQuery" />
+                <Button
+                    android:text="Enter"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/btnExecuteSql"
+                    android:textAllCaps="false"
+                    android:layout_weight="1" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>
