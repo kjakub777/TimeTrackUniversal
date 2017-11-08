@@ -48,12 +48,13 @@ namespace TimeTrackerUniversal
             SetContentView(Resource.Layout.ChangeEmails);
 
             lblPass = FindViewById<TextView>(Resource.Id.lblPass);
-            pass1 = FindViewById<EditText>(Resource.Id.pass1);
-            txtRate = FindViewById<EditText>(Resource.Id.txtRate);
-            txtServer = FindViewById<EditText>(Resource.Id.txtServer);
+            
             lblOut = FindViewById<TextView>(Resource.Id.lblOut);
             btnOk = FindViewById<Button>(Resource.Id.btnOk);
             lblEmail = FindViewById<TextView>(Resource.Id.lblEmail);
+            pass1 = FindViewById<EditText>(Resource.Id.pass1);
+            txtRate = FindViewById<EditText>(Resource.Id.txtRate);
+            txtServer = FindViewById<EditText>(Resource.Id.txtServer);
             txtToNewEmail = FindViewById<EditText>(Resource.Id.txtToNewEmail);
             txtFromNewEmail = FindViewById<EditText>(Resource.Id.txtFromNewEmail);
             txtBCCNewEmail = FindViewById<EditText>(Resource.Id.txtBCCNewEmail);
@@ -84,11 +85,11 @@ namespace TimeTrackerUniversal
                     var bcc = connection.Table<EmailAddresses>().Where(x => x.EmailType == 3).Last();
                     var hr = connection.Table<HourlyRate>().Last();
                     var pass = connection.Table<FromPassword>().Last();
-                    fileStr = new string[] { $"{to.Email}{System.Environment.NewLine}",
-                    $"{from.Email}{System.Environment.NewLine}",
-                    $"{bcc.Email}{System.Environment.NewLine}",
-                    $"{hr.Rate}{System.Environment.NewLine}",
-                    $"{pass.Pass}{System.Environment.NewLine}"
+                    fileStr = new string[] { $"{to.Email}",
+                                            $"{from.Email}",
+                                            $"{bcc.Email}",
+                                            $"{hr.Rate}",
+                                            $"{pass.Pass}"
               };
                 }
 
@@ -126,7 +127,7 @@ namespace TimeTrackerUniversal
                     catch (Exception exception)
                     {
 
-                        Toast.MakeText(ApplicationContext, "LOCAL "+exception.ToString(), ToastLength.Long).Show();
+                        Toast.MakeText(ApplicationContext, "LOCAL " + exception.ToString(), ToastLength.Long).Show();
                     }
                 }
                 if (File.Exists(SystemPath))
@@ -138,10 +139,25 @@ namespace TimeTrackerUniversal
         {
             lock (_syncLock)
             {
+                string[] fileStr;
                 string filename = "backupEmails.txt";
+                var path = "/sdcard";
+                path = Path.Combine(path, filename);
                 var SystemPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal);
                 SystemPath = Path.Combine(SystemPath, filename);
-                string[] fileStr = File.ReadAllLines(SystemPath);
+                if (File.Exists(SystemPath))
+                {
+                    fileStr = File.ReadAllLines(SystemPath);
+                }
+                else if (File.Exists(path))
+                {
+                    fileStr = File.ReadAllLines(path);
+                }
+                else
+                {
+                    return;
+                }
+
                 //1=to,2=from,3=BCC
                 using (SQLiteConnection connection = SqlConnectionFactory.GetSQLiteConnectionWithLock())
                 {
@@ -150,40 +166,58 @@ namespace TimeTrackerUniversal
                     c = connection.CreateTable<WorkInstance>(SQLite.CreateFlags.AutoIncPK);
                     c = connection.CreateTable<FromPassword>(SQLite.CreateFlags.AutoIncPK);
                     c = connection.CreateTable<ServerOut>(SQLite.CreateFlags.AutoIncPK);
-
+                    //**
+                    //pass1 = FindViewById<EditText>(Resource.Id.pass1);
+                    //txtRate = FindViewById<EditText>(Resource.Id.txtRate);
+                    //txtServer = FindViewById<EditText>(Resource.Id.txtServer);
+                    //txtToNewEmail = FindViewById<EditText>(Resource.Id.txtToNewEmail);
+                    //txtFromNewEmail = FindViewById<EditText>(Resource.Id.txtFromNewEmail);
+                    //txtBCCNewEmail = FindViewById<EditText>(Resource.Id.txtBCCNewEmail);
+                    //**
+                    txtToNewEmail.Text = fileStr[fileStr.Length - 5];
                     connection.Insert(new EmailAddresses()
                     {
                         Date = MainActivity.GetLocalTime(),
                         IsValid = true,
-                        Email = fileStr[0],
+                        Email = fileStr[fileStr.Length-5],
                         EmailType = 1
                     });
+
+                    txtFromNewEmail.Text=fileStr[fileStr.Length - 4];
                     connection.Insert(new EmailAddresses()
                     {
                         Date = MainActivity.GetLocalTime(),
                         IsValid = true,
-                        Email = fileStr[1],
+                        Email = fileStr[fileStr.Length - 4],
                         EmailType = 2
                     });
+
+                    txtBCCNewEmail.Text = fileStr[fileStr.Length - 3];
                     connection.Insert(new EmailAddresses()
                     {
                         Date = MainActivity.GetLocalTime(),
                         IsValid = true,
-                        Email = fileStr[2],
+                        Email = fileStr[fileStr.Length - 3],
                         EmailType = 3
                     });
+
+                    txtRate.Text = fileStr[fileStr.Length - 2];
                     connection.Insert(new HourlyRate()
                     {
                         Date = MainActivity.GetLocalTime(),
                         IsValid = true,
-                        Rate = (float)Convert.ToDouble(fileStr[3]),
+                        Rate = (float)Convert.ToDouble(fileStr[fileStr.Length - 2]),
                     });
+
+                    pass1.Text = fileStr[fileStr.Length - 1];
                     connection.Insert(new FromPassword()
                     {
                         Date = MainActivity.GetLocalTime(),
                         IsValid = true,
-                        Pass = fileStr[4],
+                        Pass = fileStr[fileStr.Length - 1],
                     });
+
+                    txtServer.Text = txtServer.Text;
                 }
             }
         }

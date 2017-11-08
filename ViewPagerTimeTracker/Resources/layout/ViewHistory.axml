@@ -4,7 +4,7 @@
     android:minWidth="25px"
     android:minHeight="25px"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:id="@+id/scrollViewMain"
     tools:gridSpec="1|8|#0093eeff|K:#ee8700ff:16,l:16,r|S:#83ee00ff:16,0,l:16,0,r">
     <LinearLayout
@@ -40,14 +40,14 @@
             android:minWidth="25px"
             android:minHeight="25px"
             android:layout_width="match_parent"
-            android:layout_height="50.0dp"
+            android:layout_height="match_parent"
             android:id="@+id/LabelsForHourDataLayout"
             android:background="@android:drawable/alert_dark_frame"
             android:alpha="6"
             android:weightSum="3"
             android:layout_marginLeft="2sp"
             android:layout_marginRight="2sp"
-            android:layout_weight="1" >
+            android:layout_weight="1">
             <TextView
                 android:text="Total hours for week"
                 android:id="@+id/lblWeekTotalHours"
@@ -58,7 +58,8 @@
                 android:background="#9ec2f5"
                 android:textColor="@android:color/background_dark"
                 android:layout_weight="1"
-                android:padding="2sp" />
+                android:padding="2sp"
+                android:textSize="8pt" />
             <TextView
                 android:text="Total hours for month"
                 android:id="@+id/lblMonthTotalHours"
@@ -69,19 +70,21 @@
                 android:background="#9ec2f5"
                 android:textColor="@android:color/background_dark"
                 android:layout_weight="1"
-                android:padding="2sp" />
+                android:padding="2sp"
+                android:textSize="8pt" />
             <TextView
                 android:text="Gross pay for month"
                 android:id="@+id/lblGrossPayMonth"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:editable="false"
                 android:layout_margin="3sp"
                 android:background="#9ec2f5"
                 android:textColor="@android:color/background_dark"
                 android:layout_weight="1"
                 android:padding="2sp"
-                android:layout_marginBottom="2.0dp" />
+                android:layout_marginBottom="2.0dp"
+                android:textSize="8pt" />
         </LinearLayout>
         <LinearLayout
             android:orientation="horizontal"
@@ -105,7 +108,8 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:layout_marginEnd="2sp" />
+                android:layout_marginEnd="2sp"
+                android:textSize="8pt" />
             <TextView
                 android:inputType="numberDecimal"
                 android:id="@+id/txtIntervalTotalHours"
@@ -115,7 +119,8 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="#ff000000"
-                android:layout_marginEnd="2sp" />
+                android:layout_marginEnd="2sp"
+                android:textSize="8pt" />
             <TextView
                 android:inputType="numberDecimal"
                 android:id="@+id/txtGrossPay"
@@ -124,7 +129,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:background="#ff000000" />
+                android:background="#ff000000"
+                android:textSize="8pt" />
         </LinearLayout>
         <LinearLayout
             android:orientation="vertical"
@@ -146,7 +152,8 @@
                 android:id="@+id/btnViewTimeframe"
                 android:textAllCaps="false"
                 android:background="@android:drawable/dialog_holo_dark_frame"
-                android:textColor="#9ec2f5" />
+                android:textColor="#9ec2f5"
+                android:textSize="10pt" />
             <CheckBox
                 android:text="Clear Emails and PW too?"
                 android:layout_width="match_parent"
@@ -155,15 +162,17 @@
                 android:checked="false"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:background="@android:drawable/dialog_frame" />
+                android:background="@android:drawable/dialog_frame"
+                android:textSize="10pt" />
             <Button
                 android:text="Clear DB, Must go to Change Emails to reset values if you delete those too.."
                 android:layout_width="match_parent"
-                android:layout_height="50.0dp"
+                android:layout_height="wrap_content"
                 android:id="@+id/btnClearDB"
                 android:textAllCaps="false"
                 android:background="@android:drawable/dialog_holo_dark_frame"
-                android:textColor="#9ec2f5" />
+                android:textColor="#9ec2f5"
+                android:textSize="8pt" />
             <Button
                 android:text="Delete Last Punch"
                 android:layout_width="match_parent"
@@ -171,7 +180,8 @@
                 android:id="@+id/btnDeleteLastPunch"
                 android:textAllCaps="false"
                 android:background="@android:drawable/dialog_holo_dark_frame"
-                android:textColor="#9ec2f5" />
+                android:textColor="#9ec2f5"
+                android:textSize="10pt" />
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -182,21 +192,24 @@
                 android:maxLines="1"
                 android:minLines="1" />
             <Button
-                android:text="Import Punches"
-                android:layout_width="match_parent"
-                android:layout_height="50.0dp"
-                android:id="@+id/btnImport"
-                android:textAllCaps="false"
-                android:background="#9ec2f5"
-                android:textColor="#9ec2f5" />
-            <Button
                 android:text="Export Punches"
                 android:layout_width="match_parent"
                 android:layout_height="50.0dp"
                 android:id="@+id/btnExport"
                 android:textAllCaps="false"
                 android:background="@android:drawable/dialog_holo_dark_frame"
-                android:textColor="#9ec2f5" />
+                android:textColor="#9ec2f5"
+                android:textSize="10pt" />
+            <Button
+                android:text="Import Punches"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/btnImport"
+                android:textAllCaps="false"
+                android:background="@android:drawable/dialog_holo_dark_frame"
+                android:textColor="#9ec2f5"
+                android:layout_gravity="center"
+                android:textSize="10pt" />
             <TextView
                 android:text="...."
                 android:layout_width="match_parent"
@@ -218,7 +231,8 @@
                 android:id="@+id/btnViewHistoryExit"
                 android:textAllCaps="false"
                 android:background="@android:drawable/dialog_holo_dark_frame"
-                android:textColor="#9ec2f5" />
+                android:textColor="#9ec2f5"
+                android:textSize="10pt" />
         </LinearLayout>
     </LinearLayout>
 </ScrollView>
