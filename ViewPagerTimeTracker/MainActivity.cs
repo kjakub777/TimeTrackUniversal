@@ -159,7 +159,7 @@ namespace TimeTrackerUniversal
 
         protected bool AfterEmailSent()
         {
-            using (SQLiteConnection connection = SqlConnectionFactory.GetSQLiteConnectionWithLock())
+            using (SQLiteConnectionWithLock connection = SqlConnectionFactory.GetSQLiteConnectionWithREALLock())
             {
                 if (ClockInOut_Success)
                 {
@@ -268,7 +268,7 @@ namespace TimeTrackerUniversal
             }
             try
             {
-                using (SQLiteConnection connection = SqlConnectionFactory.GetSQLiteConnectionWithLock())
+                using (SQLiteConnectionWithLock connection = SqlConnectionFactory.GetSQLiteConnectionWithREALLock())
                 {
                     var hr = connection.Table<HourlyRate>().Any() ? connection.Table<HourlyRate>().Last() : null;
                     if (hr is HourlyRate)
@@ -333,7 +333,7 @@ namespace TimeTrackerUniversal
 
         public void OnClockPunchButtonsPushed(Button ib, EventArgs e)
         {
-            using (SQLiteConnection connection = SqlConnectionFactory.GetSQLiteConnectionWithLock())
+            using (SQLiteConnectionWithLock connection = SqlConnectionFactory.GetSQLiteConnectionWithREALLock())
             {
                 WorkInstance wi = null;
                 OUT = Resource.Id.btnClockOut == ib.Id;

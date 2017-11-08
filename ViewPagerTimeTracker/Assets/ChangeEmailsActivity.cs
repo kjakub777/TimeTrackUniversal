@@ -49,7 +49,7 @@ namespace TimeTrackerUniversal
             {
                 string[] fileStr;
                 //1=to,2=from,3=BCC
-                using (SQLiteConnection connection = SqlConnectionFactory.GetSQLiteConnectionWithLock())
+                using (SQLiteConnectionWithLock connection = SqlConnectionFactory.GetSQLiteConnectionWithREALLock())
                 {
                     var to = connection.Table<EmailAddresses>().Where(x => x.EmailType == 1).Last();
                     var from = connection.Table<EmailAddresses>().Where(x => x.EmailType == 2).Last();
@@ -130,7 +130,7 @@ namespace TimeTrackerUniversal
                 }
 
                 //1=to,2=from,3=BCC
-                using (SQLiteConnection connection = SqlConnectionFactory.GetSQLiteConnectionWithLock())
+                using (SQLiteConnectionWithLock connection = SqlConnectionFactory.GetSQLiteConnectionWithREALLock())
                 {
                     int c = connection.CreateTable<HourlyRate>(CreateFlags.AutoIncPK);
                     c = connection.CreateTable<EmailAddresses>(SQLite.CreateFlags.AutoIncPK);
@@ -196,7 +196,7 @@ namespace TimeTrackerUniversal
 
         private void btnOk_Click(object sender, EventArgs e)
         {
-            using (SQLiteConnection connection = SqlConnectionFactory.GetSQLiteConnectionWithLock())
+            using (SQLiteConnectionWithLock connection = SqlConnectionFactory.GetSQLiteConnectionWithREALLock())
             {
                 DateTime dt = MainActivity.GetLocalTime();
                 if (!string.IsNullOrWhiteSpace(txtToNewEmail.Text))

@@ -6,7 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:id="@+id/scrollView2"
-    tools:actionBarNavMode="tabs">
+    tools:actionBarNavMode="tabs"
+    android:background="@android:drawable/screen_background_dark_transparent">
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
@@ -14,12 +15,12 @@
         android:id="@+id/linearLayout1V"
         android:weightSum="2"
         tools:gridSpec="1|4|#0093eeff|K:#ee8700ff:72,l|S:#00ff40ff:16,0,l:16,56,l:16,0,r"
-        android:background="@android:drawable/btn_default"
         android:scrollbarAlwaysDrawVerticalTrack="true"
         android:scrollbars="vertical"
         android:scrollbarThumbVertical="@android:drawable/status_bar_item_background"
         android:scrollbarStyle="insideInset"
-        android:scrollbarSize="15sp">
+        android:scrollbarSize="15sp"
+        android:alpha="1">
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
@@ -46,7 +47,8 @@
                     android:padding="5sp"
                     android:background="@android:color/darker_gray"
                     android:layout_margin="2sp"
-                    android:textColor="@android:color/black" />
+                    android:textColor="@android:color/darker_gray"
+                    android:backgroundTint="#ff165074" />
                 <EditText
                     android:inputType="date"
                     android:layout_width="match_parent"
@@ -58,7 +60,8 @@
                     android:background="@android:drawable/editbox_dropdown_dark_frame"
                     android:layout_margin="2sp"
                     android:textColor="@android:color/darker_gray"
-                    android:selectAllOnFocus="true" />
+                    android:selectAllOnFocus="true"
+                    android:backgroundTint="#ff165074" />
             </LinearLayout>
             <LinearLayout
                 android:orientation="vertical"
@@ -68,7 +71,10 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/linearLayout2"
                 android:weightSum="3"
-                android:background="@android:drawable/dialog_frame">
+                android:background="@android:drawable/dialog_frame"
+                android:alpha="0.8"
+                android:backgroundTint="#ff165074"
+                android:backgroundTintMode="add">
                 <TextView
                     android:text="Enter Time IN"
                     android:layout_width="match_parent"
@@ -79,7 +85,8 @@
                     android:padding="5sp"
                     android:background="@android:color/darker_gray"
                     android:layout_margin="5sp"
-                    android:textColor="@android:color/black" />
+                    android:textColor="@android:color/darker_gray"
+                    android:backgroundTint="#ff165074" />
                 <TimePicker
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -95,8 +102,8 @@
                     android:layout_weight="1"
                     android:padding="5sp"
                     android:layout_margin="5sp"
-                    android:background="@android:color/darker_gray"
-                    android:textColor="@android:color/black" />
+                    android:background="#165074"
+                    android:textColor="@android:color/darker_gray" />
                 <TimePicker
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -110,7 +117,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/linearLayout3"
-                    android:layout_margin="15sp">
+                    android:layout_margin="15sp"
+                    android:background="@android:color/darker_gray">
                     <CheckBox
                         android:text="Clock In"
                         android:layout_width="match_parent"
@@ -118,21 +126,30 @@
                         android:id="@+id/IsClockIn"
                         android:checked="false"
                         android:layout_weight="1"
-                        android:gravity="center" />
+                        android:gravity="center"
+                        android:background="@android:drawable/alert_light_frame"
+                        android:textColor="@android:color/darker_gray"
+                        android:backgroundTint="#ff165074"
+                        android:padding="2dp" />
                     <CheckBox
                         android:text="Clock Out"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:id="@+id/IsClockOut"
                         android:layout_weight="1"
-                        android:gravity="center" />
+                        android:gravity="center"
+                        android:background="@android:drawable/alert_light_frame"
+                        android:textColor="@android:color/darker_gray"
+                        android:backgroundTint="#ff165074" />
                 </LinearLayout>
                 <Button
                     android:text="Enter"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/btnPunch"
-                    android:textAllCaps="false" />
+                    android:textAllCaps="false"
+                    android:background="@android:drawable/btn_default"
+                    android:alpha="1" />
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -140,14 +157,17 @@
                     android:gravity="center"
                     android:text="_____"
                     android:background="@android:color/holo_blue_dark"
-                    android:textColor="@android:color/background_dark" />
+                    android:textColor="#23e26d"
+                    android:layout_marginLeft="7dp"
+                    android:layout_marginRight="7dp" />
                 <Button
                     android:text="Exit"
                     android:id="@+id/btnExitPass"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="1px"
-                    android:textAllCaps="false" />
+                    android:textAllCaps="false"
+                    android:background="@android:drawable/btn_default" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

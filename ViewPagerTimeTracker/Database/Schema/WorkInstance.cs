@@ -60,7 +60,7 @@ namespace TimeTrackerUniversal.Database.Schema
             }
             set
             {
-                using (SQLiteConnection connection = SqlConnectionFactory.GetSQLiteConnectionWithLock())
+                using (SQLiteConnectionWithLock connection = SqlConnectionFactory.GetSQLiteConnectionWithREALLock())
                 {
                     HourlyRate hr = connection.Table<HourlyRate>().Last();
                     if (hr == null || hr.Rate != value)

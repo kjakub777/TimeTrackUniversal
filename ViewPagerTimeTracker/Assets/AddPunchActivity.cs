@@ -41,7 +41,7 @@ namespace TimeTrackerUniversal
             DateTime date;
             try
             {
-                using (SQLiteConnection connection = SqlConnectionFactory.GetSQLiteConnectionWithLock())
+                using (SQLiteConnectionWithLock connection = SqlConnectionFactory.GetSQLiteConnectionWithREALLock())
                 {
                     if (DateTime.TryParse(dateDate.Text.ToString(), out date) && (IsClockIn.Checked || IsClockOut.Checked))
                     {

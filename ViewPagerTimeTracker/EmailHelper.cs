@@ -25,7 +25,7 @@ namespace TimeTrackerUniversal
 
         public static string SendEmail(string message, bool IsOut, bool IsReal, Func<int, string> GetString)
         {
-            using (SQLiteConnection connection = SqlConnectionFactory.GetSQLiteConnectionWithLock())
+            using (SQLiteConnectionWithLock connection = SqlConnectionFactory.GetSQLiteConnectionWithREALLock())
             {
                 string output = string.Empty;
                 var mapp = connection.TableMappings;

@@ -15,8 +15,9 @@
         android:background="@android:drawable/editbox_dropdown_dark_frame"
         android:weightSum="10"
         android:gravity="top"
-        android:backgroundTint="#ff7e49b4"
-        android:backgroundTintMode="multiply">
+        android:backgroundTint="#ff1e72b4"
+        android:backgroundTintMode="screen"
+        android:alpha="0.9">
         <LinearLayout
             android:orientation="horizontal"
             android:minWidth="25px"
@@ -26,7 +27,7 @@
             android:weightSum="3"
             android:id="@+id/ClockInAndOutLayOut"
             android:layout_weight="3"
-            android:backgroundTint="#ff7e49fa"
+            android:backgroundTint="#ff0c4996"
             android:background="#ff000000"
             android:gravity="center_vertical"
             android:elevation="10sp"
@@ -80,7 +81,7 @@
             android:id="@+id/TimeClockOut"
             android:layout_weight="1"
             android:background="@android:drawable/dialog_holo_dark_frame"
-            android:backgroundTint="#ff7e49fa"
+            android:backgroundTint="#ff0c4996"
             android:layout_margin="10sp"
             android:alpha="0.6">
             <TextView
@@ -116,7 +117,7 @@
                 android:padding="2sp"
                 android:layout_weight="1"
                 android:alpha="0.5"
-                android:backgroundTint="#ff7e49fa"
+                android:backgroundTint="#ff0c4996"
                 android:backgroundTintMode="src_over"
                 android:layout_margin="10sp"
                 android:maxLines="5"
@@ -128,7 +129,7 @@
                 android:id="@+id/LabelsForHourDataLayout"
                 android:alpha="0.6"
                 android:weightSum="3"
-                android:backgroundTint="#ff7e49fa"
+                android:backgroundTint="#ff0c4996"
                 android:background="@android:drawable/dialog_holo_dark_frame"
                 android:baselineAligned="true"
                 android:elevation="5dp"
@@ -182,7 +183,7 @@
                 android:weightSum="3"
                 android:background="@android:drawable/dialog_holo_dark_frame"
                 android:layout_gravity="center"
-                android:backgroundTint="#ff7e49fa"
+                android:backgroundTint="#ff0c4996"
                 android:gravity="center"
                 android:layout_margin="7dp"
                 android:alpha="0.7">
@@ -241,7 +242,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/buttons1"
             android:background="@android:drawable/dialog_holo_dark_frame"
-            android:backgroundTint="#ff7e49fa"
+            android:backgroundTint="#ff0c4996"
             android:layout_margin="7dp"
             android:alpha="0.7">
             <Button
@@ -263,7 +264,7 @@
                 android:textAllCaps="false"
                 android:gravity="center_vertical"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@android:drawable/dialog_holo_dark_frame"
                 android:textColor="@android:color/holo_blue_dark"
@@ -291,7 +292,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/buttons2"
             android:background="@android:drawable/dialog_holo_dark_frame"
-            android:backgroundTint="#ff7e49fa"
+            android:backgroundTint="#ff0c4996"
             android:layout_margin="7dp"
             android:alpha="0.7">
             <Button

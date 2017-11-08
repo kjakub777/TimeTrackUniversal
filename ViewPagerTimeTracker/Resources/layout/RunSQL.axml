@@ -12,7 +12,8 @@
         android:minHeight="25px"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/linearLayout3">
+        android:id="@+id/linearLayout3"
+        android:alpha="0.8">
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -22,7 +23,7 @@
             android:elevation="10dp"
             android:gravity="center"
             android:text="Enter Query Below (updates or deletes only really)"
-            android:textSize="18pt" />
+            android:textSize="10pt" />
         <EditText
             android:inputType="textMultiLine"
             android:textColor="@android:color/black"
@@ -45,7 +46,7 @@
             android:elevation="10dp"
             android:id="@+id/btnExecuteSql"
             android:textAllCaps="false"
-            android:textSize="25pt" />
+            android:textSize="10pt" />
         <Button
             android:text="Exit"
             android:layout_width="match_parent"
@@ -55,7 +56,7 @@
             android:elevation="10dp"
             android:id="@+id/btnExit"
             android:textAllCaps="false"
-            android:textSize="25pt" />
+            android:textSize="10pt" />
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/scrollViewMain"
-    tools:gridSpec="1|8|#0093eeff|K:#ee8700ff:16,l:16,r|S:#83ee00ff:16,0,l:16,0,r">
+    tools:gridSpec="1|8|#089a8b|K#089a8b:16,l:16,r|S:#089a8b:16,0,l:16,0,r">
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
@@ -18,22 +18,26 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/DateSelectorButtons"
-            android:background="#750e0e"
-            android:layout_gravity="fill">
+            android:layout_gravity="fill"
+            android:alpha="1"
+            android:background="@android:drawable/dialog_holo_dark_frame"
+            android:backgroundTint="#ff0e7792">
             <DatePicker
                 android:id="@+id/datePickerFromDate"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:minWidth="25px"
                 android:minHeight="25px"
-                android:background="@android:drawable/alert_dark_frame" />
+                android:background="@android:drawable/alert_dark_frame"
+                android:alpha="1" />
             <DatePicker
                 android:id="@+id/datePickerToDate"
                 android:startYear="2017"
                 android:minDate="01/01/2017"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@android:drawable/alert_dark_frame" />
+                android:background="@android:drawable/alert_dark_frame"
+                android:alpha="1" />
         </LinearLayout>
         <LinearLayout
             android:orientation="horizontal"
@@ -43,7 +47,7 @@
             android:layout_height="match_parent"
             android:id="@+id/LabelsForHourDataLayout"
             android:background="@android:drawable/alert_dark_frame"
-            android:alpha="6"
+            android:alpha="0.7"
             android:weightSum="3"
             android:layout_marginLeft="2sp"
             android:layout_marginRight="2sp"
@@ -55,7 +59,7 @@
                 android:layout_height="match_parent"
                 android:layout_margin="3sp"
                 android:editable="false"
-                android:background="#9ec2f5"
+                android:background="#5ed7f6"
                 android:textColor="@android:color/background_dark"
                 android:layout_weight="1"
                 android:padding="2sp"
@@ -67,7 +71,7 @@
                 android:layout_height="match_parent"
                 android:editable="false"
                 android:layout_margin="3sp"
-                android:background="#9ec2f5"
+                android:background="#5ed7f6"
                 android:textColor="@android:color/background_dark"
                 android:layout_weight="1"
                 android:padding="2sp"
@@ -79,7 +83,7 @@
                 android:layout_height="wrap_content"
                 android:editable="false"
                 android:layout_margin="3sp"
-                android:background="#9ec2f5"
+                android:background="#5ed7f6"
                 android:textColor="@android:color/background_dark"
                 android:layout_weight="1"
                 android:padding="2sp"
@@ -95,10 +99,11 @@
             android:id="@+id/ValuesForHourDataLayout"
             android:padding="5sp"
             android:weightSum="3"
-            android:background="#9ec2f5"
+            android:background="#5ed7f6"
             android:layout_marginLeft="2sp"
             android:layout_marginRight="2sp"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:alpha="0.7">
             <TextView
                 android:inputType="numberDecimal"
                 android:id="@+id/txtWeekTotalHours"
@@ -109,7 +114,9 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:layout_marginEnd="2sp"
-                android:textSize="8pt" />
+                android:textSize="8pt"
+                android:textColor="#b8dbe3"
+                android:alpha="0.8" />
             <TextView
                 android:inputType="numberDecimal"
                 android:id="@+id/txtIntervalTotalHours"
@@ -120,7 +127,9 @@
                 android:layout_weight="1"
                 android:background="#ff000000"
                 android:layout_marginEnd="2sp"
-                android:textSize="8pt" />
+                android:textSize="8pt"
+                android:textColor="#b8dbe3"
+                android:alpha="0.8" />
             <TextView
                 android:inputType="numberDecimal"
                 android:id="@+id/txtGrossPay"
@@ -130,7 +139,9 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="#ff000000"
-                android:textSize="8pt" />
+                android:textSize="8pt"
+                android:textColor="#b8dbe3"
+                android:alpha="0.8" />
         </LinearLayout>
         <LinearLayout
             android:orientation="vertical"
@@ -141,10 +152,11 @@
             android:id="@+id/ImportPunchesLayout"
             android:padding="5sp"
             android:weightSum="3"
-            android:background="#750e0e"
+            android:background="#5ed7f6"
             android:layout_marginLeft="2sp"
             android:layout_marginRight="2sp"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:alpha="0.75">
             <Button
                 android:text="View Timeframe"
                 android:layout_width="match_parent"
@@ -152,8 +164,9 @@
                 android:id="@+id/btnViewTimeframe"
                 android:textAllCaps="false"
                 android:background="@android:drawable/dialog_holo_dark_frame"
-                android:textColor="#9ec2f5"
-                android:textSize="10pt" />
+                android:textColor="#b8dbe3"
+                android:textSize="9pt"
+                android:alpha="1" />
             <CheckBox
                 android:text="Clear Emails and PW too?"
                 android:layout_width="match_parent"
@@ -162,8 +175,10 @@
                 android:checked="false"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:background="@android:drawable/dialog_frame"
-                android:textSize="10pt" />
+                android:background="@android:drawable/dialog_holo_dark_frame"
+                android:textSize="9pt"
+                android:textColor="#b8dbe3"
+                android:alpha="1" />
             <Button
                 android:text="Clear DB, Must go to Change Emails to reset values if you delete those too.."
                 android:layout_width="match_parent"
@@ -171,8 +186,9 @@
                 android:id="@+id/btnClearDB"
                 android:textAllCaps="false"
                 android:background="@android:drawable/dialog_holo_dark_frame"
-                android:textColor="#9ec2f5"
-                android:textSize="8pt" />
+                android:textColor="#b8dbe3"
+                android:textSize="8pt"
+                android:alpha="1" />
             <Button
                 android:text="Delete Last Punch"
                 android:layout_width="match_parent"
@@ -180,17 +196,27 @@
                 android:id="@+id/btnDeleteLastPunch"
                 android:textAllCaps="false"
                 android:background="@android:drawable/dialog_holo_dark_frame"
-                android:textColor="#9ec2f5"
-                android:textSize="10pt" />
+                android:textColor="#b8dbe3"
+                android:textSize="9pt"
+                android:alpha="1" />
             <EditText
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="48.5dp"
                 android:id="@+id/txtFileName"
                 android:selectAllOnFocus="true"
                 android:text="exported.csv"
-                android:background="#9ec2f5"
-                android:maxLines="1"
-                android:minLines="1" />
+                android:background="#141a9b"
+                android:maxLines="2"
+                android:minLines="2"
+                android:layout_gravity="center"
+                android:inputType="textAutoComplete"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:backgroundTint="#ff70c8b4"
+                android:alpha="0.6"
+                android:backgroundTintMode="add"
+                android:paddingRight="3sp"
+                android:paddingLeft="3sp" />
             <Button
                 android:text="Export Punches"
                 android:layout_width="match_parent"
@@ -198,8 +224,9 @@
                 android:id="@+id/btnExport"
                 android:textAllCaps="false"
                 android:background="@android:drawable/dialog_holo_dark_frame"
-                android:textColor="#9ec2f5"
-                android:textSize="10pt" />
+                android:textColor="#b8dbe3"
+                android:textSize="9pt"
+                android:alpha="1" />
             <Button
                 android:text="Import Punches"
                 android:layout_width="match_parent"
@@ -207,9 +234,10 @@
                 android:id="@+id/btnImport"
                 android:textAllCaps="false"
                 android:background="@android:drawable/dialog_holo_dark_frame"
-                android:textColor="#9ec2f5"
+                android:textColor="#b8dbe3"
                 android:layout_gravity="center"
-                android:textSize="10pt" />
+                android:textSize="9pt"
+                android:alpha="1" />
             <TextView
                 android:text="...."
                 android:layout_width="match_parent"
@@ -223,7 +251,10 @@
                 android:minLines="8"
                 android:background="@android:color/background_dark"
                 android:padding="5px"
-                android:textColor="#dcd0f3" />
+                android:textColor="#dcd0f3"
+                android:alpha="0.9"
+                android:backgroundTint="#0ff02033"
+                android:backgroundTintMode="src_atop" />
             <Button
                 android:text="Exit"
                 android:layout_width="match_parent"
@@ -231,8 +262,9 @@
                 android:id="@+id/btnViewHistoryExit"
                 android:textAllCaps="false"
                 android:background="@android:drawable/dialog_holo_dark_frame"
-                android:textColor="#9ec2f5"
-                android:textSize="10pt" />
+                android:textColor="#b8dbe3"
+                android:textSize="9pt"
+                android:alpha="1" />
         </LinearLayout>
     </LinearLayout>
 </ScrollView>

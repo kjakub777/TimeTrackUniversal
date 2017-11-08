@@ -13,12 +13,14 @@
         android:id="@+id/linearLayout1V"
         android:weightSum="2"
         tools:gridSpec="1|4|#0093eeff|K:#ee8700ff:72,l|S:#00ff40ff:16,0,l:16,56,l:16,0,r"
-        android:background="#F0A304"
+        android:background="#277cae"
         android:scrollbarAlwaysDrawVerticalTrack="true"
         android:scrollbars="vertical"
         android:scrollbarThumbVertical="@android:drawable/status_bar_item_background"
         android:scrollbarStyle="insideInset"
-        android:scrollbarSize="15sp">
+        android:scrollbarSize="15sp"
+        android:alpha="0.8"
+        android:layout_gravity="fill">
         <LinearLayout
             android:orientation="vertical"
             android:minWidth="25px"
@@ -26,17 +28,17 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/linearLayout2V"
-            android:background="#0C788A"
+            android:background="#277cae"
             android:layout_weight="2"
             android:weightSum="2">
             <LinearLayout
-                android:orientation="horizontal"
+                android:orientation="vertical"
                 android:minWidth="25px"
                 android:minHeight="25px"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/linearLayout3H"
-                android:background="#0C788A"
+                android:background="@android:drawable/alert_dark_frame"
                 android:layout_weight="1"
                 android:weightSum="2"
                 android:layout_marginBottom="0.0dp"
@@ -63,18 +65,19 @@
                     android:layout_margin="5px"
                     android:gravity="center"
                     android:elevation="10px"
-                    android:textColor="#B3E6EE"
-                    android:background="#063C45"
-                    android:selectAllOnFocus="true" />
+                    android:textColor="@android:color/darker_gray"
+                    android:background="#023037"
+                    android:selectAllOnFocus="true"
+                    android:hint="Send email PW" />
             </LinearLayout>
             <LinearLayout
-                android:orientation="horizontal"
+                android:orientation="vertical"
                 android:minWidth="25px"
                 android:minHeight="25px"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/linearLayoutEmailH"
-                android:background="#0C788A"
+                android:background="@android:drawable/alert_dark_frame"
                 android:layout_weight="1"
                 android:weightSum="2">
                 <TextView
@@ -98,19 +101,20 @@
                     android:layout_margin="5px"
                     android:gravity="center"
                     android:elevation="10px"
-                    android:background="#063C45"
-                    android:textColor="#B3E6EE"
+                    android:background="#023037"
+                    android:textColor="@android:color/darker_gray"
                     android:inputType="textEmailAddress"
                     android:hint="newnetservices.net"
                     android:selectAllOnFocus="true"
-                    android:text="newnetservices.net" />
+                    android:text="me@newnetservices.net" />
             </LinearLayout>
             <LinearLayout
-                android:orientation="horizontal"
+                android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/linearLayout2"
-                android:weightSum="2">
+                android:weightSum="2"
+                android:background="@android:drawable/alert_dark_frame">
                 <TextView
                     android:text="Enter Your Email (From email, must be office 365)"
                     android:layout_width="match_parent"
@@ -130,17 +134,19 @@
                     android:layout_gravity="center"
                     android:gravity="center"
                     android:layout_margin="5px"
-                    android:background="#063C45"
+                    android:background="#023037"
                     android:hint="newnetservices.net"
-                    android:text="newnetservices.net"
-                    android:selectAllOnFocus="true" />
+                    android:text="me@newnetservices.net"
+                    android:selectAllOnFocus="true"
+                    android:textColor="@android:color/darker_gray" />
             </LinearLayout>
             <LinearLayout
-                android:orientation="horizontal"
+                android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/linearLayout2"
-                android:weightSum="2">
+                android:weightSum="2"
+                android:background="@android:drawable/alert_dark_frame">
                 <TextView
                     android:text="Enter BCC Email"
                     android:layout_width="match_parent"
@@ -158,16 +164,18 @@
                     android:layout_gravity="center"
                     android:gravity="center"
                     android:layout_margin="5px"
-                    android:background="#063C45"
-                    android:text="gmail.com"
-                    android:selectAllOnFocus="true" />
+                    android:background="#023037"
+                    android:text="me@gmail.com"
+                    android:selectAllOnFocus="true"
+                    android:textColor="@android:color/darker_gray" />
             </LinearLayout>
             <LinearLayout
-                android:orientation="horizontal"
+                android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/linearLayout10"
-                android:weightSum="2">
+                android:weightSum="2"
+                android:background="@android:drawable/alert_dark_frame">
                 <TextView
                     android:text="Enter Pay Rate (hourly)"
                     android:layout_width="match_parent"
@@ -185,15 +193,18 @@
                     android:layout_gravity="center"
                     android:gravity="center"
                     android:layout_margin="5px"
-                    android:background="#063C45"
-                    android:selectAllOnFocus="true" />
+                    android:background="#023037"
+                    android:selectAllOnFocus="true"
+                    android:textColor="@android:color/darker_gray"
+                    android:hint="17.5" />
             </LinearLayout>
             <LinearLayout
-                android:orientation="horizontal"
+                android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/linearLayout11"
-                android:weightSum="2">
+                android:weightSum="2"
+                android:background="@android:drawable/alert_dark_frame">
                 <TextView
                     android:text="Enter outgoing Server (default smtp.office365.com)"
                     android:layout_width="match_parent"
@@ -211,11 +222,12 @@
                     android:layout_gravity="center"
                     android:gravity="center"
                     android:layout_margin="5px"
-                    android:background="#063C45"
+                    android:background="#023037"
                     android:maxLines="2"
                     android:hint="will default to smtp.office365.com"
                     android:selectAllOnFocus="true"
-                    android:text="smtp.office365.com" />
+                    android:text="smtp.office365.com"
+                    android:textColor="@android:color/darker_gray" />
             </LinearLayout>
         </LinearLayout>
         <LinearLayout
@@ -225,75 +237,89 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/linearLayoutEmail1V"
-            android:background="#0C788A"
+            android:background="@android:drawable/alert_dark_frame"
             android:layout_weight="2"
-            android:weightSum="2">
+            android:weightSum="2"
+            android:layout_marginBottom="14.0dp"
+            android:layout_marginTop="13.5dp">
             <TextView
                 android:text=".."
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/lblOut"
-                android:gravity="center"
+                android:gravity="top"
                 android:textColor="#B3E6EE"
                 android:layout_weight="1"
-                android:background="#063C45"
+                android:background="#023037"
                 android:elevation="10px"
                 android:padding="5sp"
-                android:maxLines="10" />
+                android:maxLines="10"
+                android:minLines="4" />
             <TextView
                 android:text=".."
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/lblOutEmail"
-                android:gravity="center"
+                android:gravity="top"
                 android:textColor="#B3E6EE"
-                android:background="#F5063C45"
+                android:background="#023037"
                 android:layout_weight="1"
                 android:layout_margin="1px"
                 android:padding="5sp"
-                android:maxLines="10" />
+                android:maxLines="10"
+                android:minLines="4" />
         </LinearLayout>
         <LinearLayout
             android:orientation="horizontal"
             android:minWidth="25px"
             android:minHeight="25px"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:id="@+id/linearLayoutEmailV"
             android:background="#0C788A"
-            android:weightSum="4">
+            android:weightSum="4"
+            android:layout_marginBottom="0.0dp"
+            android:layout_gravity="fill">
             <Button
                 android:text="OK"
                 android:id="@+id/btnOk"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:layout_margin="1px"
-                android:textAllCaps="false" />
+                android:textAllCaps="false"
+                android:background="@android:drawable/alert_dark_frame"
+                android:textColor="#277cae" />
             <Button
                 android:text="Export Current"
                 android:id="@+id/btnExport"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:layout_margin="1px"
-                android:textAllCaps="false" />
+                android:textAllCaps="false"
+                android:background="@android:drawable/alert_dark_frame"
+                android:textColor="#277cae" />
             <Button
                 android:text="Import Saved"
                 android:id="@+id/btnImport"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:layout_margin="1px"
-                android:textAllCaps="false" />
+                android:textAllCaps="false"
+                android:background="@android:drawable/alert_dark_frame"
+                android:textColor="#277cae" />
             <Button
                 android:text="Exit"
                 android:id="@+id/btnExitPass"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:layout_margin="1px"
-                android:textAllCaps="false" />
+                android:textAllCaps="false"
+                android:background="@android:drawable/alert_dark_frame"
+                android:textColor="#277cae" />
         </LinearLayout>
     </LinearLayout>
 </ScrollView>

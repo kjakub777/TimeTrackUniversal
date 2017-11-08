@@ -45,7 +45,7 @@ namespace TimeTrackerUniversal.Assets
             float gross = 0f;
             float Hours = 0f;
             object[] args = { true, TimeIntervalBegin, TimeIntervalEnd };
-            using (SQLiteConnection connection = SqlConnectionFactory.GetSQLiteConnectionWithLock())
+            using (SQLiteConnectionWithLock connection = SqlConnectionFactory.GetSQLiteConnectionWithREALLock())
             {
                 List<WorkInstance> instances = connection.Table<WorkInstance>().Where(x => x.IsValid && x.Date >= TimeIntervalBegin && x.Date < TimeIntervalEnd).Cast<WorkInstance>().ToList();
                 foreach (var wi in instances)

@@ -27,7 +27,7 @@ namespace TimeTrackerUniversal
         private void btnExecuteSql_Click(object sender, EventArgs e)
         {
 
-            using (SQLiteConnection connection = SqlConnectionFactory.GetSQLiteConnectionWithLock())
+            using (SQLiteConnectionWithLock connection = SqlConnectionFactory.GetSQLiteConnectionWithREALLock())
             {
                 int res = connection.Execute(txtSqlQuery.Text);
                 txtOutput.Text += " || > " + res;

@@ -47,7 +47,7 @@ namespace TimeTrackerUniversal
         {
             txtFileName.Text = "deletedWorkinstances.csv";
             btnExport_Click(sender, e);
-            using (SQLiteConnection connection = SqlConnectionFactory.GetSQLiteConnectionWithLock())
+            using (SQLiteConnectionWithLock connection = SqlConnectionFactory.GetSQLiteConnectionWithREALLock())
             {
                 
                 if (chkClearAll.Checked)
@@ -79,7 +79,7 @@ namespace TimeTrackerUniversal
         }
         private void btnDeleteLastPunch_Click(object sender, EventArgs e)
         {
-            using (SQLiteConnection connection = SqlConnectionFactory.GetSQLiteConnectionWithLock())
+            using (SQLiteConnectionWithLock connection = SqlConnectionFactory.GetSQLiteConnectionWithREALLock())
             {
                 var id = connection.Table<WorkInstance>().Last();
                 txtImportOutput.Text = $"Deleted {id.ToString()}";
@@ -142,7 +142,7 @@ namespace TimeTrackerUniversal
                                 {
                                     try
                                     {
-                                        using (SQLiteConnection connection = SqlConnectionFactory.GetSQLiteConnectionWithLock())
+                                        using (SQLiteConnectionWithLock connection = SqlConnectionFactory.GetSQLiteConnectionWithREALLock())
                                         {
                                             punchOUT = col;
                                             DateTime resDate;
@@ -260,7 +260,7 @@ namespace TimeTrackerUniversal
                 {
                     btnExport.Text = "Now Exported";
 
-                    using (SQLiteConnection connection = SqlConnectionFactory.GetSQLiteConnectionWithLock())
+                    using (SQLiteConnectionWithLock connection = SqlConnectionFactory.GetSQLiteConnectionWithREALLock())
                     {
                         if (!string.IsNullOrWhiteSpace(txtFileName.Text))
                         {
