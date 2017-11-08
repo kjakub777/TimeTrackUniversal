@@ -270,35 +270,43 @@ namespace TimeTrackerUniversal
                     if (instances.Count() > 0)
                     {
                         //**
-                        var path = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal);
-                        path = Path.Combine(path, SqlConnectionFactory.fileName);
-                        string backupDir = "/sdcard/";
+                        try
+                        {
+                            var path = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal);
+                            path = Path.Combine(path, SqlConnectionFactory.fileName);
+                            string backupDir = "/sdcard/";
 
-                        if (!Directory.Exists(backupDir)) Directory.CreateDirectory(backupDir);
-                        if (!File.Exists(Path.Combine(backupDir, SqlConnectionFactory.fileName))) File.Create(Path.Combine(backupDir, SqlConnectionFactory.fileName));
-                        if (File.Exists(path))
-                            File.Copy(path, Path.Combine(backupDir, SqlConnectionFactory.fileName), true);
-                        //**
-                        string dirName = "/sdcard";
-                        string fileName = Path.Combine(dirName, txtFileName.Text);
-                        if (!Directory.Exists(dirName))
-                        {
-                            Directory.CreateDirectory(dirName);
+                            if (!Directory.Exists(backupDir)) Directory.CreateDirectory(backupDir);
+                            if (!File.Exists(Path.Combine(backupDir, SqlConnectionFactory.fileName))) File.Create(Path.Combine(backupDir, SqlConnectionFactory.fileName));
+                            if (File.Exists(path))
+                                File.Copy(path, Path.Combine(backupDir, SqlConnectionFactory.fileName), true);
+                            //**
+                            string dirName = "/sdcard";
+                            string fileName = Path.Combine(dirName, txtFileName.Text);
+                            if (!Directory.Exists(dirName))
+                            {
+                                Directory.CreateDirectory(dirName);
+                            }
+                            if (!File.Exists(fileName))
+                            {
+                                File.Create(fileName);
+                            }
+
+                            path = Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal), txtFileName.Text);
+
+                            foreach (WorkInstance wi in instances)
+                            {
+                                lines.Add(String.Format("{0:MM/dd/yyyy}", wi.Date) + "," + String.Format("{0:HH:mm:ss}", wi.ClockIn) + "," + String.Format("{0:HH:mm:ss}", wi.ClockOut));
+                                File.AppendAllText(path, String.Format("{0:MM/dd/yyyy}", wi.Date) + "," + String.Format("{0:HH:mm:ss}", wi.ClockIn) + "," + String.Format("{0:HH:mm:ss}", wi.ClockOut) + System.Environment.NewLine);
+                            }
+                            File.Copy(path, Path.Combine(backupDir, txtFileName.Text), true);
+
                         }
-                        if (!File.Exists(fileName))
+                        catch (IOException x)
                         {
-                            File.Create(fileName);
+                            txtImportOutput.Text = "FileIO Exception, keep tring and it will work!" + x.Message;
+                            Toast.MakeText(ApplicationContext, "FileIO Exception, keep tring and it will work!" + x.Message, ToastLength.Long).Show(); ;
                         }
-                         
-                        path = Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal), txtFileName.Text);
-                    
-                        foreach (WorkInstance wi in instances)
-                        {
-                            lines.Add(String.Format("{0:MM/dd/yyyy}", wi.Date) + "," + String.Format("{0:HH:mm:ss}", wi.ClockIn) + "," + String.Format("{0:HH:mm:ss}", wi.ClockOut));
-                            File.AppendAllText(path, String.Format("{0:MM/dd/yyyy}", wi.Date) + "," + String.Format("{0:HH:mm:ss}", wi.ClockIn) + "," + String.Format("{0:HH:mm:ss}", wi.ClockOut) + System.Environment.NewLine);
-                        }
-                        File.Copy(path, Path.Combine(backupDir, txtFileName.Text), true);
-                        
                     }
                 }
                 catch (Exception exception)

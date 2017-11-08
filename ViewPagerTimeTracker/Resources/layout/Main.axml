@@ -12,12 +12,10 @@
         android:layout_width="match_parent"
         android:layout_height="fill_parent"
         android:id="@+id/Root"
-        android:background="@android:drawable/editbox_dropdown_dark_frame"
+        android:background="@android:drawable/alert_dark_frame"
         android:weightSum="10"
         android:gravity="top"
-        android:backgroundTint="#ff1e72b4"
-        android:backgroundTintMode="screen"
-        android:alpha="0.9">
+        android:alpha="1">
         <LinearLayout
             android:orientation="horizontal"
             android:minWidth="25px"
@@ -306,7 +304,8 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:textColor="@android:color/holo_blue_dark"
-                android:elevation="10dp" />
+                android:elevation="10dp"
+                android:layout_gravity="center" />
             <Button
                 android:text="Edit Punch"
                 android:id="@+id/btnEditPunch"

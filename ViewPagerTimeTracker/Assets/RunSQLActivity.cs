@@ -29,8 +29,16 @@ namespace TimeTrackerUniversal
 
             using (SQLiteConnectionWithLock connection = SqlConnectionFactory.GetSQLiteConnectionWithREALLock())
             {
-                int res = connection.Execute(txtSqlQuery.Text);
-                txtOutput.Text += " || > " + res;
+                try
+                {
+                    int res = connection.Execute(txtSqlQuery.Text);
+                    txtOutput.Text += " || > " + res;
+                }
+                catch (Exception x)
+                {
+
+                    Toast.MakeText(ApplicationContext, "SQL Exception, don't try to selct anything!" + x.Message, ToastLength.Long).Show(); ;
+                }
             }
         }
 

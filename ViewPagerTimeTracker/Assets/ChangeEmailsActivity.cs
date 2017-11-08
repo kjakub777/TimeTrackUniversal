@@ -76,13 +76,21 @@ namespace TimeTrackerUniversal
                     }
                     catch (Exception exception)
                     {
-
+                        Toast.MakeText(ApplicationContext, "FileIO Exception, keep tring and it will work!" + exception.Message, ToastLength.Long).Show(); ;
                         Toast.MakeText(ApplicationContext, "INTERNAL " + exception.ToString(), ToastLength.Long).Show();
                     }
                 }
                 // File.OpenWrite(fileName); 
 
-                File.AppendAllLines(SystemPath, fileStr);
+                try
+                {
+                    File.AppendAllLines(SystemPath, fileStr);
+                }
+                catch (Exception exception)
+                {
+
+                    Toast.MakeText(ApplicationContext, "FileIO Exception, keep tring and it will work!" + exception.Message, ToastLength.Long).Show(); ; ;
+                }
 
                 string backupDir = "/sdcard/";
 
@@ -97,6 +105,8 @@ namespace TimeTrackerUniversal
                     }
                     catch (Exception exception)
                     {
+                        
+                        Toast.MakeText(ApplicationContext, "FileIO Exception, keep tring and it will work!" + exception.Message, ToastLength.Long).Show(); ;
 
                         Toast.MakeText(ApplicationContext, "LOCAL " + exception.ToString(), ToastLength.Long).Show();
                     }
