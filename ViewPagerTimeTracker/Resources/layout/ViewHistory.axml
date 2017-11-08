@@ -18,7 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/DateSelectorButtons"
-            android:background="#300e75"
+            android:background="#750e0e"
             android:layout_gravity="fill">
             <DatePicker
                 android:id="@+id/datePickerFromDate"
@@ -141,7 +141,7 @@
             android:id="@+id/ImportPunchesLayout"
             android:padding="5sp"
             android:weightSum="3"
-            android:background="#300e75"
+            android:background="#750e0e"
             android:layout_marginLeft="2sp"
             android:layout_marginRight="2sp"
             android:layout_weight="1">

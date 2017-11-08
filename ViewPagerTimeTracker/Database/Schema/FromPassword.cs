@@ -1,32 +1,33 @@
 ﻿
 using SQLite;
 using System;
-using System.Linq; 
+using System.Linq;
 
 namespace TimeTrackerUniversal.Database.Schema
 {
 
-	public class FromPassword :IDatabase
-	{       /**********************/
-		[PrimaryKey, AutoIncrement]
-		public int Oid { get; set; }
+    public class FromPassword : IDatabase
+    {       /**********************/
 
-		[NotNull]
-		public bool IsValid { get; set; }
+        public FromPassword() : base() { }
 
-		[Ignore]
-		public string InDatabase { get; set; }
-		/**********************/
-		public DateTime Date { get; set; }
+        public override string ToString()
+        {
+            return $"Oid={Oid.ToString()},Date={Date.ToString()}, PW={Pass}";
+        }
 
-		[NotNull]
-		public string Pass { get; set; }
+        /**********************/
+        public DateTime Date { get; set; }
 
-		public override string ToString()
-		{
-			return $"Oid={Oid.ToString()},Date={Date.ToString()}, PW={Pass}";
-		}
+        [Ignore]
+        public string InDatabase { get; set; }
 
-		public FromPassword() : base() { }
-	}
+        [NotNull]
+        public bool IsValid { get; set; }
+        [PrimaryKey, AutoIncrement]
+        public int Oid { get; set; }
+
+        [NotNull]
+        public string Pass { get; set; }
+    }
 }

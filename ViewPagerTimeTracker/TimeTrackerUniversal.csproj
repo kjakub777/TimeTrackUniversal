@@ -80,12 +80,9 @@
   <ItemGroup>
     <Compile Include="Assets\ChangeEmailsActivity.cs" />
     <Compile Include="Assets\AddPunchActivity.cs" />
-    <Compile Include="Assets\ChangeSettingActivity.cs" />
     <Compile Include="Assets\Helper.cs" />
     <Compile Include="Assets\ViewHistoryActivity.cs" />
     <Compile Include="Assets\RunSQLActivity.cs" />
-    <Compile Include="Database\DatabaseAction.cs" />
-    <Compile Include="Database\Schema\BaseObject.cs" />
     <Compile Include="Database\Schema\EmailAddresses.cs" />
     <Compile Include="Database\Schema\FromPassword.cs" />
     <Compile Include="Database\Schema\ServerOut.cs" />
@@ -106,9 +103,6 @@
     <None Include="Properties\AndroidManifest.xml" />
     <None Include="Assets\AboutAssets.txt" />
     <AndroidResource Include="Resources\layout\ViewHistory.axml">
-      <SubType>Designer</SubType>
-    </AndroidResource>
-    <AndroidResource Include="Resources\layout\ChangeSettings.axml">
       <SubType>Designer</SubType>
     </AndroidResource>
     <AndroidResource Include="Resources\layout\ChangeEmails.axml">

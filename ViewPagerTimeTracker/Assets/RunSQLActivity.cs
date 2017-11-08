@@ -1,50 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using Android.App;
-using Android.Content;
+﻿using Android.App;
 using Android.OS;
-using Android.Runtime;
-using Android.Util;
-using Android.Views;
+
 using Android.Widget;
-using TimeTrackerUniversal.Database;
-using TimeTrackerUniversal.Database.Schema;
 using SQLite;
+using System;
+using System.Linq;
+using TimeTrackerUniversal.Database;
 
 namespace TimeTrackerUniversal
 {
     [Activity(Label = "Run SQL", MainLauncher = false, Icon = "@drawable/icon")]
     public class RunSQLActivity : Activity
     {
-        EditText txtSqlQuery;
-        TextView txtOutput;
         Button btnExecuteSql;//sqlQuery btnExecuteSql 
         Button btnExit;//sqlQuery btnExecuteSql 
+        TextView txtOutput;
+        EditText txtSqlQuery;
 
 
         public RunSQLActivity()
         {
 
-
-        }
-        protected override void OnCreate(Bundle savedInstanceState)
-        {
-            base.OnCreate(savedInstanceState);
-            SetContentView(Resource.Layout.RunSQL);
-
-            btnExecuteSql = FindViewById<Button>(Resource.Id.btnExecuteSql);
-            btnExit = FindViewById<Button>(Resource.Id.btnExit);
-            txtSqlQuery = FindViewById<EditText>(Resource.Id.txtSqlQuery);
-            txtOutput = FindViewById<TextView>(Resource.Id.txtOutput);
-
-            DateTime dt = DateTime.Now.ToLocalTime();//.Month
-            Java.Lang.Boolean b = Java.Lang.Boolean.True;
-
-            btnExecuteSql.Click += btnExecuteSql_Click;
-            btnExit.Click += btnExit_Click;
 
         }
 
@@ -64,6 +40,24 @@ namespace TimeTrackerUniversal
         {
             SetResult(Result.Ok);
             this.OnBackPressed();
+        }
+
+        protected override void OnCreate(Bundle savedInstanceState)
+        {
+            base.OnCreate(savedInstanceState);
+            SetContentView(Resource.Layout.RunSQL);
+
+            btnExecuteSql = FindViewById<Button>(Resource.Id.btnExecuteSql);
+            btnExit = FindViewById<Button>(Resource.Id.btnExit);
+            txtSqlQuery = FindViewById<EditText>(Resource.Id.txtSqlQuery);
+            txtOutput = FindViewById<TextView>(Resource.Id.txtOutput);
+
+            DateTime dt = DateTime.Now.ToLocalTime();//.Month
+            Java.Lang.Boolean b = Java.Lang.Boolean.True;
+
+            btnExecuteSql.Click += btnExecuteSql_Click;
+            btnExit.Click += btnExit_Click;
+
         }
     }
 }

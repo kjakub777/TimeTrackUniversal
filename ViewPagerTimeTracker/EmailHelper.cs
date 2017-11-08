@@ -1,13 +1,11 @@
-﻿using Android.Views;
+﻿using Android.Util;
+using SQLite;
 using System;
 using System.Linq;
 using System.Net.Mail;
 using System.Text;
-using TimeTrackerUniversal.Database.Schema;
 using TimeTrackerUniversal.Database;
-using SQLite;
-using TimeTrackerUniversal;
-using Android.Util;
+using TimeTrackerUniversal.Database.Schema;
 
 namespace TimeTrackerUniversal
 {
@@ -25,11 +23,11 @@ namespace TimeTrackerUniversal
         #endregion
 
 
-        public static string SendEmail(string message, bool IsOut, bool IsReal,  Func<int, string> GetString)
+        public static string SendEmail(string message, bool IsOut, bool IsReal, Func<int, string> GetString)
         {
             using (SQLiteConnection connection = SqlConnectionFactory.GetSQLiteConnectionWithLock())
             {
-                string output = "";
+                string output = string.Empty;
                 var mapp = connection.TableMappings;
                 foreach (TableMapping tm in mapp)
                 {
@@ -60,7 +58,7 @@ namespace TimeTrackerUniversal
                 if (IsReal)
                 {
                     mm.To.Add(toEmailReal.Email);
-                    output = "REAL to "+toEmailReal.Email;
+                    output = "REAL to " + toEmailReal.Email;
                 }
                 else
                 {
@@ -71,8 +69,8 @@ namespace TimeTrackerUniversal
                     mm.Subject = "Clock out";
                 else
                     mm.Subject = "Clock in";
-                output += " "+mm.Subject;
-                mm.Body = "";// message;
+                output += " " + mm.Subject;
+                mm.Body = string.Empty;// message;
                 mm.BodyEncoding = UTF8Encoding.UTF8;
                 mm.DeliveryNotificationOptions = DeliveryNotificationOptions.OnFailure;
 

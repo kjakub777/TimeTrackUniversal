@@ -1,19 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using Android.App;
-using Android.Content;
+﻿using Android.App;
 using Android.OS;
-using Android.Runtime;
-using Android.Util;
-using Android.Views;
+
 using Android.Widget;
+using SQLite;
+using System;
+using System.IO;
+using System.Linq;
 using TimeTrackerUniversal.Database;
 using TimeTrackerUniversal.Database.Schema;
-using SQLite;
-using System.IO;
 
 namespace TimeTrackerUniversal
 {
@@ -21,20 +15,20 @@ namespace TimeTrackerUniversal
     public class ChangeEmailsActivity : Activity
     {
         static readonly object _syncLock = new object();
-        TextView lblPass;
-        EditText pass1;
-        TextView lblOut;
-        Button btnOk;
-        TextView lblEmail;
-        EditText txtToNewEmail;
-        EditText txtFromNewEmail;
-        EditText txtBCCNewEmail;
-        EditText txtRate;
-        EditText txtServer;
-        TextView lblOutEmail;
         Button btnExitPass;
         Button btnExport;
         Button btnImport;
+        Button btnOk;
+        TextView lblEmail;
+        TextView lblOut;
+        TextView lblOutEmail;
+        TextView lblPass;
+        EditText pass1;
+        EditText txtBCCNewEmail;
+        EditText txtFromNewEmail;
+        EditText txtRate;
+        EditText txtServer;
+        EditText txtToNewEmail;
 
 
         public ChangeEmailsActivity()
@@ -42,34 +36,11 @@ namespace TimeTrackerUniversal
 
 
         }
-        protected override void OnCreate(Bundle savedInstanceState)
+
+        private void btnExitPass_Click(object sender, EventArgs e)
         {
-            base.OnCreate(savedInstanceState);
-            SetContentView(Resource.Layout.ChangeEmails);
-
-            lblPass = FindViewById<TextView>(Resource.Id.lblPass);
-            
-            lblOut = FindViewById<TextView>(Resource.Id.lblOut);
-            btnOk = FindViewById<Button>(Resource.Id.btnOk);
-            lblEmail = FindViewById<TextView>(Resource.Id.lblEmail);
-            pass1 = FindViewById<EditText>(Resource.Id.pass1);
-            txtRate = FindViewById<EditText>(Resource.Id.txtRate);
-            txtServer = FindViewById<EditText>(Resource.Id.txtServer);
-            txtToNewEmail = FindViewById<EditText>(Resource.Id.txtToNewEmail);
-            txtFromNewEmail = FindViewById<EditText>(Resource.Id.txtFromNewEmail);
-            txtBCCNewEmail = FindViewById<EditText>(Resource.Id.txtBCCNewEmail);
-            lblOutEmail = FindViewById<TextView>(Resource.Id.lblOutEmail);
-            btnExport = FindViewById<Button>(Resource.Id.btnExport);
-            btnImport = FindViewById<Button>(Resource.Id.btnImport);
-            btnExitPass = FindViewById<Button>(Resource.Id.btnExitPass);
-
-            DateTime dt = DateTime.Now.ToLocalTime();//.Month
-            Java.Lang.Boolean b = Java.Lang.Boolean.True;
-            btnOk.Click += btnOk_Click;
-            btnExitPass.Click += btnExitPass_Click;
-            btnExport.Click += btnExport_Click;
-            btnImport.Click += btnImport_Click;
-
+            SetResult(Result.Ok);
+            this.OnBackPressed();
         }
 
         private void btnExport_Click(object sender, EventArgs e)
@@ -179,11 +150,11 @@ namespace TimeTrackerUniversal
                     {
                         Date = MainActivity.GetLocalTime(),
                         IsValid = true,
-                        Email = fileStr[fileStr.Length-5],
+                        Email = fileStr[fileStr.Length - 5],
                         EmailType = 1
                     });
 
-                    txtFromNewEmail.Text=fileStr[fileStr.Length - 4];
+                    txtFromNewEmail.Text = fileStr[fileStr.Length - 4];
                     connection.Insert(new EmailAddresses()
                     {
                         Date = MainActivity.GetLocalTime(),
@@ -220,12 +191,6 @@ namespace TimeTrackerUniversal
                     txtServer.Text = txtServer.Text;
                 }
             }
-        }
-
-        private void btnExitPass_Click(object sender, EventArgs e)
-        {
-            SetResult(Result.Ok);
-            this.OnBackPressed();
         }
 
 
@@ -315,6 +280,36 @@ namespace TimeTrackerUniversal
                     lblOut.Text = $"OK Server=> {ea.ToString()}";
                 }
             }
+        }
+
+        protected override void OnCreate(Bundle savedInstanceState)
+        {
+            base.OnCreate(savedInstanceState);
+            SetContentView(Resource.Layout.ChangeEmails);
+
+            lblPass = FindViewById<TextView>(Resource.Id.lblPass);
+
+            lblOut = FindViewById<TextView>(Resource.Id.lblOut);
+            btnOk = FindViewById<Button>(Resource.Id.btnOk);
+            lblEmail = FindViewById<TextView>(Resource.Id.lblEmail);
+            pass1 = FindViewById<EditText>(Resource.Id.pass1);
+            txtRate = FindViewById<EditText>(Resource.Id.txtRate);
+            txtServer = FindViewById<EditText>(Resource.Id.txtServer);
+            txtToNewEmail = FindViewById<EditText>(Resource.Id.txtToNewEmail);
+            txtFromNewEmail = FindViewById<EditText>(Resource.Id.txtFromNewEmail);
+            txtBCCNewEmail = FindViewById<EditText>(Resource.Id.txtBCCNewEmail);
+            lblOutEmail = FindViewById<TextView>(Resource.Id.lblOutEmail);
+            btnExport = FindViewById<Button>(Resource.Id.btnExport);
+            btnImport = FindViewById<Button>(Resource.Id.btnImport);
+            btnExitPass = FindViewById<Button>(Resource.Id.btnExitPass);
+
+            DateTime dt = DateTime.Now.ToLocalTime();//.Month
+            Java.Lang.Boolean b = Java.Lang.Boolean.True;
+            btnOk.Click += btnOk_Click;
+            btnExitPass.Click += btnExitPass_Click;
+            btnExport.Click += btnExport_Click;
+            btnImport.Click += btnImport_Click;
+
         }
 
 

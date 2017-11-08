@@ -1,33 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using Android.App;
-using Android.Content;
+﻿using Android.App;
 using Android.OS;
-using Android.Runtime;
-using Android.Util;
-using Android.Views;
+
 using Android.Widget;
+using SQLite;
+using System;
+using System.Linq;
 using TimeTrackerUniversal.Database;
 using TimeTrackerUniversal.Database.Schema;
-using SQLite;
 
 namespace TimeTrackerUniversal
 {
     [Activity(Label = "Add Punch", MainLauncher = false, Icon = "@drawable/icon")]
     public class AddPunchActivity : Activity
     {
-        //Button btnOk;
-        EditText dateDate;
-        TextView punchOut;
         Button btnExitPass;
-        Button btnPunch;
-        TimePicker timePickIn;
-        TimePicker timePickOut;
+        Button btnPunch; 
+        EditText dateDate;
         CheckBox IsClockIn;
         CheckBox IsClockOut;
+        TextView punchOut;
+        TimePicker timePickIn;
+        TimePicker timePickOut;
 
 
         public AddPunchActivity()
@@ -35,30 +28,13 @@ namespace TimeTrackerUniversal
 
 
         }
-        protected override void OnCreate(Bundle savedInstanceState)
+
+        private void btnExitPass_Click(object sender, EventArgs e)
         {
-            base.OnCreate(savedInstanceState);
-            SetContentView(Resource.Layout.AddPunch);
-
-            btnExitPass = FindViewById<Button>(Resource.Id.btnExitPass);
-            btnPunch = FindViewById<Button>(Resource.Id.btnPunch);
-            dateDate = FindViewById<EditText>(Resource.Id.dateDate); 
-            punchOut = FindViewById<TextView>(Resource.Id.punchOut);
-            timePickIn = FindViewById<TimePicker>(Resource.Id.timePickIn);
-            timePickOut = FindViewById<TimePicker>(Resource.Id.timePickOut);
-            IsClockIn = FindViewById<CheckBox>(Resource.Id.IsClockIn);
-            IsClockOut = FindViewById<CheckBox>(Resource.Id.IsClockOut);
-
-            DateTime dt = MainActivity.GetLocalTime();//.Month
-            dateDate.Text = $"{dt.Month}/{dt.Day}/{dt.Year}";
-            Java.Lang.Boolean b = Java.Lang.Boolean.True;
-            //timePickIn.SetIs24HourView(b);
-            //timePickOut.SetIs24HourView(b);
-            btnPunch.Click += btnPunch_Click; 
-            btnExitPass.Click += btnExitPass_Click; 
-
+            SetResult(Result.Ok);
+            this.OnBackPressed();
         }
-      
+
         private void btnPunch_Click(object sender, EventArgs e)
         {
             punchOut.Text = $"Clocking...";
@@ -77,18 +53,18 @@ namespace TimeTrackerUniversal
                             if (wi.ClockIn != wi.ClockOut)
                             {
                                 //System.Globalization.Calendar.CurrentEra;                                                                    //String.Format("{0:HH:mm:ss}", wi.ClockIn)
-                                DateTime dateTime = new DateTime(date.Year, date.Month, date.Day, timePickIn.Hour, timePickIn.Minute, 0, 0 , DateTimeKind.Local);
-                                   
-                                DateTime timein = MainActivity.GetLocalTime( dateTime);
-                                dateTime = new DateTime(date.Year, date.Month, date.Day, timePickOut.Hour, timePickOut.Minute ,   0, 0, DateTimeKind.Local);
-                                DateTime timeout = MainActivity.GetLocalTime( dateTime);
+                                DateTime dateTime = new DateTime(date.Year, date.Month, date.Day, timePickIn.Hour, timePickIn.Minute, 0, 0, DateTimeKind.Local);
+
+                                DateTime timein = MainActivity.GetLocalTime(dateTime);
+                                dateTime = new DateTime(date.Year, date.Month, date.Day, timePickOut.Hour, timePickOut.Minute, 0, 0, DateTimeKind.Local);
+                                DateTime timeout = MainActivity.GetLocalTime(dateTime);
                                 var hourlyRate = (connection.Table<HourlyRate>().Last()).Rate;
                                 connection.Insert(new WorkInstance()
                                 {
                                     Date = date,
                                     IsValid = true,
-                                    ClockIn =  timein,
-                                    ClockOut = IsClockOut.Checked ?  timeout : timein,
+                                    ClockIn = timein,
+                                    ClockOut = IsClockOut.Checked ? timeout : timein,
                                     HourlyRate = hourlyRate,
                                 });
                                 punchOut.Text = $"You are clocked!";
@@ -103,7 +79,7 @@ namespace TimeTrackerUniversal
                             if (wi.ClockIn == wi.ClockOut)
                             {
                                 DateTime dateTime = new DateTime(date.Year, date.Month, date.Day, timePickOut.Hour, timePickOut.Minute, 0, 0, DateTimeKind.Local);
-                                DateTime timeout = MainActivity.GetLocalTime( dateTime);
+                                DateTime timeout = MainActivity.GetLocalTime(dateTime);
 
                                 wi.ClockOut = timeout;
                                 connection.Update(wi);
@@ -126,10 +102,28 @@ namespace TimeTrackerUniversal
             punchOut.Text += "  ||";
         }
 
-        private void btnExitPass_Click(object sender, EventArgs e)
+        protected override void OnCreate(Bundle savedInstanceState)
         {
-            SetResult(Result.Ok);
-            this.OnBackPressed();
+            base.OnCreate(savedInstanceState);
+            SetContentView(Resource.Layout.AddPunch);
+
+            btnExitPass = FindViewById<Button>(Resource.Id.btnExitPass);
+            btnPunch = FindViewById<Button>(Resource.Id.btnPunch);
+            dateDate = FindViewById<EditText>(Resource.Id.dateDate);
+            punchOut = FindViewById<TextView>(Resource.Id.punchOut);
+            timePickIn = FindViewById<TimePicker>(Resource.Id.timePickIn);
+            timePickOut = FindViewById<TimePicker>(Resource.Id.timePickOut);
+            IsClockIn = FindViewById<CheckBox>(Resource.Id.IsClockIn);
+            IsClockOut = FindViewById<CheckBox>(Resource.Id.IsClockOut);
+
+            DateTime dt = MainActivity.GetLocalTime();//.Month
+            dateDate.Text = $"{dt.Month}/{dt.Day}/{dt.Year}";
+            Java.Lang.Boolean b = Java.Lang.Boolean.True;
+            //timePickIn.SetIs24HourView(b);
+            //timePickOut.SetIs24HourView(b);
+            btnPunch.Click += btnPunch_Click;
+            btnExitPass.Click += btnExitPass_Click;
+
         }
 
 
