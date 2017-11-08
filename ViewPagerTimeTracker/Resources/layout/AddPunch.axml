@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:minWidth="25px"
+    android:minHeight="25px"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/scrollView2"
+    tools:actionBarNavMode="tabs">
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/linearLayout1V"
+        android:weightSum="2"
+        tools:gridSpec="1|4|#0093eeff|K:#ee8700ff:72,l|S:#00ff40ff:16,0,l:16,56,l:16,0,r"
+        android:background="@android:drawable/btn_default"
+        android:scrollbarAlwaysDrawVerticalTrack="true"
+        android:scrollbars="vertical"
+        android:scrollbarThumbVertical="@android:drawable/status_bar_item_background"
+        android:scrollbarStyle="insideInset"
+        android:scrollbarSize="15sp">
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:showDividers="none"
+            android:layout_margin="5sp"
+            android:weightSum="7"
+            android:layout_weight="1">
+            <LinearLayout
+                android:orientation="vertical"
+                android:minWidth="25px"
+                android:minHeight="25px"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/linearLayout1"
+                android:background="@android:drawable/dialog_frame">
+                <TextView
+                    android:text="Enter Date mm/dd/yyyy"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/enterDatelbl"
+                    android:gravity="center"
+                    android:layout_weight="1"
+                    android:padding="5sp"
+                    android:background="@android:color/darker_gray"
+                    android:layout_margin="2sp"
+                    android:textColor="@android:color/black" />
+                <EditText
+                    android:inputType="date"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/dateDate"
+                    android:text="01/01/2018"
+                    android:gravity="center"
+                    android:layout_weight="1"
+                    android:background="@android:drawable/editbox_dropdown_dark_frame"
+                    android:layout_margin="2sp"
+                    android:textColor="@android:color/darker_gray"
+                    android:selectAllOnFocus="true" />
+            </LinearLayout>
+            <LinearLayout
+                android:orientation="vertical"
+                android:minWidth="25px"
+                android:minHeight="25px"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/linearLayout2"
+                android:weightSum="3"
+                android:background="@android:drawable/dialog_frame">
+                <TextView
+                    android:text="Enter Time IN"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/EnterTimeinlbl"
+                    android:gravity="center"
+                    android:layout_weight="1"
+                    android:padding="5sp"
+                    android:background="@android:color/darker_gray"
+                    android:layout_margin="5sp"
+                    android:textColor="@android:color/black" />
+                <TimePicker
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/timePickIn"
+                    android:layout_weight="1"
+                    android:padding="5sp" />
+                <TextView
+                    android:text="Enter Time OUT"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/EnterTimeOutlbl"
+                    android:gravity="center"
+                    android:layout_weight="1"
+                    android:padding="5sp"
+                    android:layout_margin="5sp"
+                    android:background="@android:color/darker_gray"
+                    android:textColor="@android:color/black" />
+                <TimePicker
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/timePickOut"
+                    android:layout_weight="1"
+                    android:padding="5sp" />
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:minWidth="25px"
+                    android:minHeight="25px"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/linearLayout3"
+                    android:layout_margin="15sp">
+                    <CheckBox
+                        android:text="Clock In"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:id="@+id/IsClockIn"
+                        android:checked="false"
+                        android:layout_weight="1"
+                        android:gravity="center" />
+                    <CheckBox
+                        android:text="Clock Out"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:id="@+id/IsClockOut"
+                        android:layout_weight="1"
+                        android:gravity="center" />
+                </LinearLayout>
+                <Button
+                    android:text="Enter"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/btnPunch"
+                    android:textAllCaps="false" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/punchOut"
+                    android:gravity="center"
+                    android:text="_____"
+                    android:background="@android:color/holo_blue_dark"
+                    android:textColor="@android:color/background_dark" />
+                <Button
+                    android:text="Exit"
+                    android:id="@+id/btnExitPass"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="1px"
+                    android:textAllCaps="false" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

@@ -9,6 +9,7 @@ using TimeTrackerUniversal.Database;
 using TimeTrackerUniversal.Database.Schema;
 using System.Linq;
 using System.IO;
+using TimeTrackerUniversal.Assets;
 
 namespace TimeTrackerUniversal
 {
@@ -18,7 +19,7 @@ namespace TimeTrackerUniversal
 
         static readonly object _syncLock = new object();
         public static string DB_PATH = string.Empty;
-
+        bool fresh = true;
         Button btnChangeEmails;// = FindViewById<Button>(Resource.Id.btnClockIn);
         Button btnAddPunch;// = FindViewById<Button>(Resource.Id.btnClockIn);
         Button btnEditPunch;// = FindViewById<Button>(Resource.Id.btnClockIn);
@@ -53,11 +54,13 @@ namespace TimeTrackerUniversal
         EditText dateTxtYear;
         private bool Imported = false;
         private bool OUT = false;
-        private string output = string.Empty;
+        public string output = "..";
         Switch switchUpdatePayRate;
         TextView txtImportOutput;// = FindViewById<TextView>(Resource.Id.txtCurrentPayRate);
 
         private static float initRate;
+        private DateTime TimeIntervalBegin;
+        private DateTime TimeIntervalEnd;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -65,6 +68,18 @@ namespace TimeTrackerUniversal
 
             // Set our view from the "main" layout resource
             SetContentView(Resource.Layout.Main);
+            //backup db
+            var path = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal);
+            path = Path.Combine(path, SqlConnectionFactory.fileName);
+            string backupDir = "/sdcard/";
+            if (fresh)
+            {
+                if (!Directory.Exists(backupDir)) Directory.CreateDirectory(backupDir);
+                if (!File.Exists(Path.Combine( backupDir , SqlConnectionFactory.fileName))) File.Create(Path.Combine( backupDir , SqlConnectionFactory.fileName));
+                if (File.Exists(path))
+                    File.Copy(path,Path.Combine( backupDir , SqlConnectionFactory.fileName), true);
+                fresh = false;
+            }
             txtLastPunch = FindViewById<TextView>(Resource.Id.txtLastPunch);
             txtWeekTotalHours = FindViewById<TextView>(Resource.Id.txtWeekTotalHours);
             txtMainOut = FindViewById<TextView>(Resource.Id.txtMainOut);
@@ -85,6 +100,24 @@ namespace TimeTrackerUniversal
             btnAddPunch = FindViewById<Button>(Resource.Id.btnAddPunch);
 
 
+            //dateTxtMonth.Text = MainActivity.GetLocalTime().Month.ToString();
+            //dateTxtYear.Text = MainActivity.GetLocalTime().Year.ToString();
+
+            btnClockIn.Click += ButtonClockedInOut_Handler;// delegate { btnClockIn_Clicked(); };
+            btnClockOut.Click += ButtonClockedInOut_Handler;// delegate { btnClockIn_Clicked(); };
+            btnAddPunch.Click += btnAddPunch_Click;// delegate { btnClockIn_Clicked(); };
+            ForReal.CheckedChange += ForReal_CheckedChanged;
+            btnExit.Click += ExitDoer;
+            btnEditPunch.Click += btnEditPunch_Click;// = FindViewById<Button>(Resource.Id.btnClockIn);
+            btnSqlQuery.Click += btnSqlQuery_Click;// = FindViewById<Button>(Resource.Id.btnClockIn);
+            btnViewHistory.Click += btnViewHistory_Click;// = FindViewById<Button>(Resource.Id.btnClockIn);
+                                                         // = FindViewById<Button>(Resource.Id.btnClockIn);
+                                                         // = FindViewById<Button>(Resource.Id.btnClockIn);
+
+            btnChangeEmails.Click += BtnChangeEmails_Clicked;
+
+            RealClockPunch = ForReal.Checked;
+
             using (SQLiteConnection connection = SqlConnectionFactory.GetSQLiteConnection())
             {
                 Log.Debug("DATABASE", connection.ExecuteScalar<string>("PRAGMA database_list"));
@@ -95,6 +128,7 @@ namespace TimeTrackerUniversal
                 c = connection.CreateTable<WorkInstance>(SQLite.CreateFlags.AutoIncPK);
 
                 c = connection.CreateTable<FromPassword>(SQLite.CreateFlags.AutoIncPK);
+                c = connection.CreateTable<ServerOut>(SQLite.CreateFlags.AutoIncPK);
                 c = connection.CreateTable<EmailAddresses>(SQLite.CreateFlags.AutoIncPK);
 
                 //if (!connection.Table<FromPassword>().Any())
@@ -115,18 +149,16 @@ namespace TimeTrackerUniversal
             {
                 using (SQLiteConnection connection = SqlConnectionFactory.GetSQLiteConnectionWithLock())
                 {
-                    HourlyRate hr = connection.Table<HourlyRate>().Last();
-                    if (hr != null)
+                    var hr = connection.Table<HourlyRate>().Any() ? connection.Table<HourlyRate>().Last() : null;
+                    if (hr is HourlyRate)
                     {
-                        txtCurrentPayRate.Text = string.Empty + hr.Rate;
                         MainActivity.initRate = hr.Rate;
                     }
                     else
                     {
-                        txtCurrentPayRate.Text = string.Empty + Convert.ToDouble("0");
-                        MainActivity.initRate = (float)Convert.ToDouble(GetString(Resource.String.initialPay));
+                        MainActivity.initRate = 0f;
                     }
-                    WorkInstance v = connection.Table<WorkInstance>().Last();
+                    var v = connection.Table<WorkInstance>().Any() ? connection.Table<WorkInstance>().Last() : null;
                     txtLastPunch.Text = v != null ? v.ClockIn == v.ClockOut ? $"In {v.ClockIn.ToString()}" : $"Out {v.ClockOut.ToString()}" : "NULL";
 
                 }
@@ -135,22 +167,35 @@ namespace TimeTrackerUniversal
             {
                 txtMainOut.Text = $"ERR {Ex.Message}";
             }
-            //dateTxtMonth.Text = MainActivity.GetLocalTime().Month.ToString();
-            //dateTxtYear.Text = MainActivity.GetLocalTime().Year.ToString();
 
-            btnClockIn.Click += ButtonClockedInOut_Handler;// delegate { btnClockIn_Clicked(); };
-            btnClockOut.Click += ButtonClockedInOut_Handler;// delegate { btnClockIn_Clicked(); };
-            ForReal.CheckedChange += ForReal_CheckedChanged;
-            btnExit.Click += ExitDoer;
-            btnEditPunch.Click += btnEditPunch_Click;// = FindViewById<Button>(Resource.Id.btnClockIn);
-            btnSqlQuery.Click += btnSqlQuery_Click;// = FindViewById<Button>(Resource.Id.btnClockIn);
-            btnViewHistory.Click += btnViewHistory_Click;// = FindViewById<Button>(Resource.Id.btnClockIn);
-                                                         // = FindViewById<Button>(Resource.Id.btnClockIn);
-                                                         // = FindViewById<Button>(Resource.Id.btnClockIn);
+            string na = "";
+            Helper.SetWeekFrame(ref TimeIntervalBegin, ref TimeIntervalEnd);
+            txtWeekTotalHours.Text = string.Empty + String.Format("{0:0.00}", Helper.GetTotalHoursForTimePeriod(TimeIntervalBegin, TimeIntervalEnd, ref na));
+            TimeIntervalBegin = Convert.ToDateTime(MainActivity.GetLocalTime().Month + "/" + "01" + "/" + MainActivity.GetLocalTime().Year);
+            TimeIntervalEnd = Convert.ToDateTime((MainActivity.GetLocalTime().Month < 12 ? MainActivity.GetLocalTime().Month + 1 : 1) + "/" + "01" + "/" + (MainActivity.GetLocalTime().Month < 12 ? MainActivity.GetLocalTime().Year : MainActivity.GetLocalTime().Year + 1));
 
-            btnChangeEmails.Click += BtnChangeEmails_Clicked;
+            string grossPayStr = "";
+            float hrs = Helper.GetTotalHoursForTimePeriod(TimeIntervalBegin, TimeIntervalEnd, ref grossPayStr);
+            txtMonthTotalHours.Text = string.Empty + String.Format("{0:0.00}", hrs);
+            txtGrossPay.Text = grossPayStr;
+        }
 
-            RealClockPunch = ForReal.Checked;
+        private void btnAddPunch_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                lock (_syncLock)
+                {
+                    Intent intent = new Intent(this.ApplicationContext, typeof(AddPunchActivity));
+                    intent.SetFlags(ActivityFlags.ForwardResult);
+                    intent.SetFlags(ActivityFlags.ReceiverForeground);
+                    StartActivity(intent);
+                }
+            }
+            catch (Exception exx)
+            {
+                Log.Error("EXCEPTION", exx.Message + "\t      " + exx.StackTrace);
+            }
 
         }
 
@@ -228,7 +273,7 @@ namespace TimeTrackerUniversal
         }
         public void ButtonClockedInOut_Handler(object sender, EventArgs e)
         {
-            output = string.Empty;
+            output = " ";
             //if (!ClockInOut_Success)
             //{
             Button ib = ((Button)sender);
@@ -292,14 +337,14 @@ namespace TimeTrackerUniversal
         {
             using (SQLiteConnection connection = SqlConnectionFactory.GetSQLiteConnectionWithLock())
             {
-                WorkInstance wi=null;
+                WorkInstance wi = null;
                 OUT = Resource.Id.btnClockOut == ib.Id;
                 try
                 {
-                      wi = connection.Table<WorkInstance>().Last();
+                    wi = connection.Table<WorkInstance>().Last();
                 }
-                catch (Exception )
-                { 
+                catch (Exception)
+                {
 
                 }
                 if (wi != null)
@@ -345,16 +390,8 @@ namespace TimeTrackerUniversal
         {
             try
             {
-                if (!OUT)
-                {
-                    Log.Debug("PunchClock.PunchClock", "IN");
-                    return (EmailHelper.SendEmail(string.Empty, OUT, RealClockPunch, ref output, FindViewById, GetString));
-                }
-                else
-                {
-                    Log.Debug("PunchClock.PunchClock", "OUT");
-                    return (EmailHelper.SendEmail(string.Empty, OUT, RealClockPunch, ref output, FindViewById, GetString));
-                }
+                output += EmailHelper.SendEmail(string.Empty, OUT, RealClockPunch, GetString);
+                return (!output.Contains("ERROR"));
             }
             catch (Exception ex)
             {
@@ -381,33 +418,40 @@ namespace TimeTrackerUniversal
         }
         public static DateTime GetLocalTime()
         {
-            TimeSpan ts;
-            DateTime dt = DateTime.Now.ToUniversalTime();
-            if (DateTime.Now.IsDaylightSavingTime())
-            {
-                ts = new TimeSpan(TimeSpan.TicksPerHour * 7);
-            }
-            else
-            {
-                ts = new TimeSpan(TimeSpan.TicksPerHour * 6);
-            }
+            //TimeSpan ts;
+            //DateTime dt = DateTime.Now.ToUniversalTime();
+            //if (DateTime.Now.IsDaylightSavingTime())
+            //{
+            //    ts = new TimeSpan(TimeSpan.TicksPerHour * 7);
+            //}
+            //else
+            //{
+            //    ts = new TimeSpan(TimeSpan.TicksPerHour * 6);
+            //}
 
-            dt = dt.Subtract(ts);
-            return dt;
+            //dt = dt.Subtract(ts);
+            string datetime = $"{DateTime.Now.ToLocalTime().ToShortDateString()} {DateTime.Now.ToLocalTime().ToLongTimeString()}";
+
+            return Convert.ToDateTime(datetime);
         }
-        public static DateTime GetLocalTime(ref DateTime dt)
+        public static DateTime GetLocalTime( DateTime dt)
         {
-            TimeSpan ts;
-            if (dt.IsDaylightSavingTime())
-            {
-                ts = new TimeSpan(TimeSpan.TicksPerHour * 7);
-            }
-            else
-            {
-                ts = new TimeSpan(TimeSpan.TicksPerHour * 6);
-            }
+            //TimeSpan ts;
+            //TimeZoneInfo timeZoneInfo = new TimeZoneInfo(TimeZone.CurrentTimeZone.);
+            //TimeZone zone = new TimeZone();
+            //if (dt.IsDaylightSavingTime())
+            //{
+            //    ts = new TimeSpan(TimeSpan.TicksPerHour * 7);
+            //}
+            //else
+            //{
+            //    ts = new TimeSpan(TimeSpan.TicksPerHour * 6);
+            //}
 
-            dt = dt.Subtract(ts);
+            //dt = dt.Subtract(ts);
+            string datetime = $"{dt.ToLocalTime().ToShortDateString()} {dt.ToLocalTime().ToLongTimeString()}";
+
+            dt = Convert.ToDateTime(datetime);
             return dt;
         }
     }

@@ -25,10 +25,11 @@ namespace TimeTrackerUniversal
         #endregion
 
 
-        public static bool SendEmail(string message, bool IsOut, bool IsReal, ref string output, Func<int, View> FindViewById, Func<int, string> GetString)
+        public static string SendEmail(string message, bool IsOut, bool IsReal,  Func<int, string> GetString)
         {
             using (SQLiteConnection connection = SqlConnectionFactory.GetSQLiteConnectionWithLock())
             {
+                string output = "";
                 var mapp = connection.TableMappings;
                 foreach (TableMapping tm in mapp)
                 {
@@ -59,17 +60,18 @@ namespace TimeTrackerUniversal
                 if (IsReal)
                 {
                     mm.To.Add(toEmailReal.Email);
-                    output = GetString(Resource.String.real_output)+" to "+toEmailReal.Email;
+                    output = "REAL to "+toEmailReal.Email;
                 }
                 else
                 {
                     mm.To.Add(myEmailAddress.Email);
-                    output = GetString(Resource.String.not_real_output) + " to " + myEmailAddress.Email;
+                    output = "TEST to " + myEmailAddress.Email;
                 }
                 if (IsOut)
                     mm.Subject = "Clock out";
                 else
                     mm.Subject = "Clock in";
+                output += " "+mm.Subject;
                 mm.Body = "";// message;
                 mm.BodyEncoding = UTF8Encoding.UTF8;
                 mm.DeliveryNotificationOptions = DeliveryNotificationOptions.OnFailure;
@@ -77,13 +79,12 @@ namespace TimeTrackerUniversal
                 try
                 {
                     client.Send(mm);
-                    return true;
+                    return output;
                 }
                 catch (Exception ex)
                 {
                     output += "ERROR | " + ex.Message + " Make sure you go to Change Emails and set values!";
-
-                    return false;
+                    return output;
                 }
             }
         }//end mail

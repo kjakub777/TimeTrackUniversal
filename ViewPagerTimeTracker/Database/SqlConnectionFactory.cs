@@ -5,7 +5,7 @@ namespace TimeTrackerUniversal.Database
 {
     public class SqlConnectionFactory
 	{
-		const string fileName = "TimeTrackerv2.db3";
+		public static string fileName = "TimeTrackerUniversal.db3";
 
         public static SQLiteConnection GetSQLiteConnectionWithLock()
         {
@@ -19,8 +19,7 @@ namespace TimeTrackerUniversal.Database
             //{
             //    File.Create(path);
             //}
-            var path = "/sdcard/MyAppData/Database/";// System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal);
-            path = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal);
+          var path = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal);
             path = Path.Combine(path, fileName);
             var connection = new SQLiteConnection(path);
 
@@ -38,8 +37,7 @@ namespace TimeTrackerUniversal.Database
             //{
             //    File.Create(path);
             //}
-            var path = "/sdcard/MyAppData/Database/";// System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal);
-              path =  System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal);
+            var   path =  System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal);
             path = Path.Combine(path, fileName);
             var connection = new SQLiteConnection(path);
 

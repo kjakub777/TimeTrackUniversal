@@ -17,30 +17,52 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/lblEnterQuery"
+            android:textColor="@android:color/holo_blue_dark"
+            android:background="@android:drawable/dialog_holo_dark_frame"
+            android:elevation="10dp"
             android:gravity="center"
-            android:text="_____" />
+            android:text="Enter Query Below (updates or deletes only really)"
+            android:textSize="18pt" />
         <EditText
             android:inputType="textMultiLine"
+            android:textColor="@android:color/black"
+            android:background="@android:color/holo_blue_dark"
+            android:elevation="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/txtSqlQuery" />
-      <Button
-          android:text="Enter"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:id="@+id/btnExecuteSql"
-          android:textAllCaps="false" />
-      <Button
-          android:text="Exit"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:id="@+id/btnExit"
-          android:textAllCaps="false" />
+            android:id="@+id/txtSqlQuery"
+            android:layout_marginLeft="4sp"
+            android:layout_marginRight="4sp"
+            android:hint="Query...."
+            android:minLines="10"
+            android:gravity="top" />
+        <Button
+            android:text="Enter"
+            android:layout_width="match_parent"
+            android:layout_height="70.0dp"
+            android:textColor="@android:color/holo_blue_dark"
+            android:background="@android:drawable/dialog_holo_dark_frame"
+            android:elevation="10dp"
+            android:id="@+id/btnExecuteSql"
+            android:textAllCaps="false"
+            android:textSize="25pt" />
+        <Button
+            android:text="Exit"
+            android:layout_width="match_parent"
+            android:layout_height="70.0dp"
+            android:textColor="@android:color/holo_blue_dark"
+            android:background="@android:drawable/dialog_holo_dark_frame"
+            android:elevation="10dp"
+            android:id="@+id/btnExit"
+            android:textAllCaps="false"
+            android:textSize="25pt" />
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/txtOutput"
-            android:gravity="center"
-            android:text="_____" />
+            android:gravity="left"
+            android:text="Result"
+            android:minLines="8"
+            android:layout_gravity="left" />
     </LinearLayout>
 </ScrollView>

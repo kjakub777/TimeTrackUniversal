@@ -115,15 +115,15 @@ namespace TimeTrackerUniversal
 								{
 									Date = date,
 									IsValid = true,
-									ClockIn = MainActivity.GetLocalTime(ref timein),
-									ClockOut = IsClockOut.Checked ? MainActivity.GetLocalTime(ref timeout) : timein,
+									ClockIn = MainActivity.GetLocalTime(  timein),
+									ClockOut = IsClockOut.Checked ? MainActivity.GetLocalTime(  timeout) : MainActivity.GetLocalTime(timein),
 									HourlyRate = hourlyRate,
 								});
 								punchOut.Text = $"You are clocked!";
 							}
 							else
 							{
-								punchOut.Text = $"You still need to clock out from last clock in {wi.ClockIn}";
+								punchOut.Text = $"You still need to clock out from last clock in {wi.ClockIn.ToLongTimeString()}";
 							}
 						}
 						else if (IsClockOut.Checked)
@@ -131,7 +131,7 @@ namespace TimeTrackerUniversal
 							if (wi.ClockIn == wi.ClockOut)
 							{
 								DateTime timeout = new DateTime(date.Year, date.Month, date.Day, timePickOut.Hour, timePickOut.Minute, 0);
-								wi.ClockOut = MainActivity.GetLocalTime(ref timeout);
+								wi.ClockOut = MainActivity.GetLocalTime(  timeout);
 								connection.Update(wi);
 								punchOut.Text = $"You are clocked!";
 							}

@@ -5,185 +5,220 @@
     android:minHeight="25px"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:id="@+id/scrollViewMain">
-  <LinearLayout
-      android:orientation="vertical"
-      android:layout_width="match_parent"
-      android:layout_height="match_parent">
+    android:id="@+id/scrollViewMain"
+    tools:gridSpec="1|8|#0093eeff|K:#ee8700ff:16,l:16,r|S:#83ee00ff:16,0,l:16,0,r">
     <LinearLayout
-   android:orientation="horizontal"
-   android:minWidth="25px"
-   android:minHeight="25px"
-   android:layout_width="match_parent"
-   android:layout_height="wrap_content"
-   android:id="@+id/DateSelectorButtons"
-   android:weightSum="4"
-   android:background="@android:color/holo_green_light">
-      <LinearLayout
-          android:orientation="vertical"
-          android:minWidth="25px"
-          android:minHeight="25px"
-          android:layout_width="wrap_content"
-          android:layout_height="match_parent"
-          android:id="@+id/DayMonthPickerButtonLayout"
-          android:layout_weight="1.5">
-        <Button
-            android:text="Pick Day"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/btnDayPicker"
-            android:textAllCaps="false" />
-        <Button
-            android:text="Pick Month"
-            android:id="@+id/btnMonthPicker"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:textAllCaps="false" />
-      </LinearLayout>
-      <LinearLayout
-          android:orientation="vertical"
-          android:minWidth="25px"
-          android:minHeight="25px"
-          android:layout_width="wrap_content"
-          android:layout_height="match_parent"
-          android:id="@+id/MonthYearDropLayout"
-          android:weightSum="4"
-          android:layout_weight="1.5">
-        <EditText
-            android:inputType="date"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/dateTxtMonth"
-            android:layout_weight="1"
-            android:hint="Month #" />
-        <EditText
-            android:inputType="date"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/dateTxtYear"
-            android:hint="Year"
-            android:layout_weight="1" />
-      </LinearLayout>
-      <LinearLayout
-          android:orientation="vertical"
-          android:minWidth="25px"
-          android:minHeight="25px"
-          android:layout_width="wrap_content"
-          android:layout_height="match_parent"
-          android:id="@+id/ToFromDateButtonLayout"
-          android:weightSum="2"
-          android:layout_weight="0.3"
-          android:gravity="right"
-          android:visibility="visible">
-        <Button
-            android:text="Change Pwd/Email"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/btnChangePassword"
-            android:layout_weight="0"
-            android:visibility="visible"
-            android:layout_margin="10px"
-            android:gravity="center_vertical"
-            android:textAllCaps="false" />
-        <Button
-            android:text="Select end date"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/btnToDate"
-            android:layout_weight="1"
-            android:visibility="visible" />
-      </LinearLayout>
-    </LinearLayout>
-    <LinearLayout
-        android:orientation="horizontal"
-        android:minWidth="25px"
-        android:minHeight="25px"
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/LabelsForHourDataLayout"
-        android:background="#4D4DFF"
-        android:alpha="6"
-        android:weightSum="3"
-        android:layout_marginLeft="2sp"
-        android:layout_marginRight="2sp"
-        android:layout_weight="1">
-      <TextView
-          android:text="Total hours for week"
-          android:id="@+id/lblWeekTotalHours"
-          android:layout_width="match_parent"
-          android:layout_height="match_parent"
-          android:layout_margin="3sp"
-          android:editable="false"
-          android:background="#DDDDA9"
-          android:textColor="#4D4D3F"
-          android:layout_weight="1"
-          android:padding="2sp" />
-      <TextView
-          android:text="Total hours for month"
-          android:id="@+id/lblMonthTotalHours"
-          android:layout_width="match_parent"
-          android:layout_height="match_parent"
-          android:editable="false"
-          android:layout_margin="3sp"
-          android:background="#DDDDA9"
-          android:textColor="#4D4D3F"
-          android:layout_weight="1"
-          android:padding="2sp" />
-      <TextView
-          android:text="Gross pay for month"
-          android:id="@+id/lblGrossPayMonth"
-          android:layout_width="match_parent"
-          android:layout_height="match_parent"
-          android:editable="false"
-          android:layout_margin="3sp"
-          android:background="#DDDDA9"
-          android:textColor="#4D4D3F"
-          android:layout_weight="1"
-          android:padding="2sp" />
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:orientation="vertical"
+            android:minWidth="25px"
+            android:minHeight="25px"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/DateSelectorButtons"
+            android:background="#300e75"
+            android:layout_gravity="fill">
+            <DatePicker
+                android:id="@+id/datePickerFromDate"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:minWidth="25px"
+                android:minHeight="25px"
+                android:background="@android:drawable/alert_dark_frame" />
+            <DatePicker
+                android:id="@+id/datePickerToDate"
+                android:startYear="2017"
+                android:minDate="01/01/2017"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:drawable/alert_dark_frame" />
+        </LinearLayout>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:minWidth="25px"
+            android:minHeight="25px"
+            android:layout_width="match_parent"
+            android:layout_height="50.0dp"
+            android:id="@+id/LabelsForHourDataLayout"
+            android:background="@android:drawable/alert_dark_frame"
+            android:alpha="6"
+            android:weightSum="3"
+            android:layout_marginLeft="2sp"
+            android:layout_marginRight="2sp"
+            android:layout_weight="1" >
+            <TextView
+                android:text="Total hours for week"
+                android:id="@+id/lblWeekTotalHours"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="3sp"
+                android:editable="false"
+                android:background="#9ec2f5"
+                android:textColor="@android:color/background_dark"
+                android:layout_weight="1"
+                android:padding="2sp" />
+            <TextView
+                android:text="Total hours for month"
+                android:id="@+id/lblMonthTotalHours"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:editable="false"
+                android:layout_margin="3sp"
+                android:background="#9ec2f5"
+                android:textColor="@android:color/background_dark"
+                android:layout_weight="1"
+                android:padding="2sp" />
+            <TextView
+                android:text="Gross pay for month"
+                android:id="@+id/lblGrossPayMonth"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:editable="false"
+                android:layout_margin="3sp"
+                android:background="#9ec2f5"
+                android:textColor="@android:color/background_dark"
+                android:layout_weight="1"
+                android:padding="2sp"
+                android:layout_marginBottom="2.0dp" />
+        </LinearLayout>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:minWidth="25px"
+            android:minHeight="25px"
+            android:layout_width="match_parent"
+            android:layout_height="50.0dp"
+            android:id="@+id/ValuesForHourDataLayout"
+            android:padding="5sp"
+            android:weightSum="3"
+            android:background="#9ec2f5"
+            android:layout_marginLeft="2sp"
+            android:layout_marginRight="2sp"
+            android:layout_weight="1">
+            <TextView
+                android:inputType="numberDecimal"
+                android:id="@+id/txtWeekTotalHours"
+                android:background="#ff000000"
+                android:text="000"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:layout_marginEnd="2sp" />
+            <TextView
+                android:inputType="numberDecimal"
+                android:id="@+id/txtIntervalTotalHours"
+                android:text="000"
+                android:gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="#ff000000"
+                android:layout_marginEnd="2sp" />
+            <TextView
+                android:inputType="numberDecimal"
+                android:id="@+id/txtGrossPay"
+                android:text="000"
+                android:gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="#ff000000" />
+        </LinearLayout>
+        <LinearLayout
+            android:orientation="vertical"
+            android:minWidth="25px"
+            android:minHeight="25px"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/ImportPunchesLayout"
+            android:padding="5sp"
+            android:weightSum="3"
+            android:background="#300e75"
+            android:layout_marginLeft="2sp"
+            android:layout_marginRight="2sp"
+            android:layout_weight="1">
+            <Button
+                android:text="View Timeframe"
+                android:layout_width="match_parent"
+                android:layout_height="50.0dp"
+                android:id="@+id/btnViewTimeframe"
+                android:textAllCaps="false"
+                android:background="@android:drawable/dialog_holo_dark_frame"
+                android:textColor="#9ec2f5" />
+            <CheckBox
+                android:text="Clear Emails and PW too?"
+                android:layout_width="match_parent"
+                android:layout_height="50.0dp"
+                android:id="@+id/chkClearAll"
+                android:checked="false"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:background="@android:drawable/dialog_frame" />
+            <Button
+                android:text="Clear DB, Must go to Change Emails to reset values if you delete those too.."
+                android:layout_width="match_parent"
+                android:layout_height="50.0dp"
+                android:id="@+id/btnClearDB"
+                android:textAllCaps="false"
+                android:background="@android:drawable/dialog_holo_dark_frame"
+                android:textColor="#9ec2f5" />
+            <Button
+                android:text="Delete Last Punch"
+                android:layout_width="match_parent"
+                android:layout_height="50.0dp"
+                android:id="@+id/btnDeleteLastPunch"
+                android:textAllCaps="false"
+                android:background="@android:drawable/dialog_holo_dark_frame"
+                android:textColor="#9ec2f5" />
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/txtFileName"
+                android:selectAllOnFocus="true"
+                android:text="exported.csv"
+                android:background="#9ec2f5"
+                android:maxLines="1"
+                android:minLines="1" />
+            <Button
+                android:text="Import Punches"
+                android:layout_width="match_parent"
+                android:layout_height="50.0dp"
+                android:id="@+id/btnImport"
+                android:textAllCaps="false"
+                android:background="#9ec2f5"
+                android:textColor="#9ec2f5" />
+            <Button
+                android:text="Export Punches"
+                android:layout_width="match_parent"
+                android:layout_height="50.0dp"
+                android:id="@+id/btnExport"
+                android:textAllCaps="false"
+                android:background="@android:drawable/dialog_holo_dark_frame"
+                android:textColor="#9ec2f5" />
+            <TextView
+                android:text="...."
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/txtImportOutput"
+                android:textAlignment="gravity"
+                android:layout_gravity="left"
+                android:gravity="left"
+                android:layout_weight="1"
+                android:maxLines="10"
+                android:minLines="8"
+                android:background="@android:color/background_dark"
+                android:padding="5px"
+                android:textColor="#dcd0f3" />
+            <Button
+                android:text="Exit"
+                android:layout_width="match_parent"
+                android:layout_height="50.0dp"
+                android:id="@+id/btnViewHistoryExit"
+                android:textAllCaps="false"
+                android:background="@android:drawable/dialog_holo_dark_frame"
+                android:textColor="#9ec2f5" />
+        </LinearLayout>
     </LinearLayout>
-    <LinearLayout
-        android:orientation="horizontal"
-        android:minWidth="25px"
-        android:minHeight="25px"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/ValuesForHourDataLayout"
-        android:padding="5sp"
-        android:weightSum="3"
-        android:background="#4D4DFF"
-        android:layout_marginLeft="2sp"
-        android:layout_marginRight="2sp"
-        android:layout_weight="1">
-      <TextView
-          android:inputType="numberDecimal"
-          android:id="@+id/txtWeekTotalHours"
-          android:background="#95BFD4"
-          android:text="000"
-          android:layout_width="wrap_content"
-          android:layout_height="match_parent"
-          android:layout_weight="1"
-          android:gravity="center"
-          android:layout_marginEnd="2sp" />
-      <TextView
-          android:inputType="numberDecimal"
-          android:id="@+id/txtMonthTotalHours"
-          android:text="000"
-          android:gravity="center"
-          android:layout_width="wrap_content"
-          android:layout_height="match_parent"
-          android:layout_weight="1"
-          android:background="#95BFD4"
-          android:layout_marginEnd="2sp" />
-      <TextView
-          android:inputType="numberDecimal"
-          android:id="@+id/txtGrossPay"
-          android:text="000"
-          android:gravity="center"
-          android:layout_width="wrap_content"
-          android:layout_height="match_parent"
-          android:layout_weight="1"
-          android:background="#95BFD4" />
-    </LinearLayout>
-  </LinearLayout>
 </ScrollView>

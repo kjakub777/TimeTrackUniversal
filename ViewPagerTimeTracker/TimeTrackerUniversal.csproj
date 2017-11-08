@@ -67,6 +67,9 @@
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <AndroidUseSharedRuntime>false</AndroidUseSharedRuntime>
+    <EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
+    <BundleAssemblies>true</BundleAssemblies>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -76,13 +79,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\ChangeEmailsActivity.cs" />
+    <Compile Include="Assets\AddPunchActivity.cs" />
     <Compile Include="Assets\ChangeSettingActivity.cs" />
+    <Compile Include="Assets\Helper.cs" />
     <Compile Include="Assets\ViewHistoryActivity.cs" />
     <Compile Include="Assets\RunSQLActivity.cs" />
     <Compile Include="Database\DatabaseAction.cs" />
     <Compile Include="Database\Schema\BaseObject.cs" />
     <Compile Include="Database\Schema\EmailAddresses.cs" />
     <Compile Include="Database\Schema\FromPassword.cs" />
+    <Compile Include="Database\Schema\ServerOut.cs" />
     <Compile Include="Database\Schema\HourlyRate.cs" />
     <Compile Include="Database\Schema\IDatabase.cs" />
     <Compile Include="Database\Schema\WorkInstance.cs" />
@@ -109,6 +115,9 @@
       <SubType>Designer</SubType>
     </AndroidResource>
     <AndroidResource Include="Resources\layout\RunSQL.axml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
+    <AndroidResource Include="Resources\layout\AddPunch.axml">
       <SubType>Designer</SubType>
     </AndroidResource>
   </ItemGroup>

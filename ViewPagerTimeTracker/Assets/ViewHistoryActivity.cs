@@ -13,19 +13,36 @@ using Android.Widget;
 using TimeTrackerUniversal.Database;
 using TimeTrackerUniversal.Database.Schema;
 using SQLite;
+using System.IO;
+using TimeTrackerUniversal.Assets;
+using System.Threading.Tasks;
 
 namespace TimeTrackerUniversal
 {
     [Activity(Label = "History", MainLauncher = false, Icon = "@drawable/icon")]
     public class ViewHistoryActivity : Activity
     {
-        EditText sqlQuery;
-        TextView txtOutput;
-        Button btnExit;//sqlQuery btnExecuteSql 
-        DateTime TimeIntervalBegin;
-        DateTime TimeIntervalEnd;
-        Button btnDayPicker;
+        static readonly object _syncLock = new object();
+        EditText txtFileName;
+        TextView txtImportOutput;
+        TextView txtIntervalTotalHours;
+        TextView txtWeekTotalHours;
+        TextView txtGrossPay;
+        Button btnViewHistoryExit;//sqlQuery btnExecuteSql 
+        Button btnImport;//sqlQuery btnExecuteSql 
+        Button btnExport;//sqlQuery btnExecuteSql 
+        Button btnClearDB;//sqlQuery btnExecuteSql 
+        Button btnDeleteLastPunch;//sqlQuery btnExecuteSql 
+        DateTime TimeIntervalBegin;// = Convert.ToDateTime(MainActivity.GetLocalTime().Month + "/" + "01" + "/" + MainActivity.GetLocalTime().Year);
+        DateTime TimeIntervalEnd;// = Convert.ToDateTime((MainActivity.GetLocalTime().Month < 12 ? MainActivity.GetLocalTime().Month + 1 : 1) + "/" + "01" + "/" + MainActivity.GetLocalTime().Year);
+        DatePicker datePickerFromDate;
+        DatePicker datePickerToDate;
+        CheckBox chkClearAll;
+        Button btnViewTimeframe;
         Button btnMonthPicker;
+        private bool Imported;
+        private bool Exported;
+
         public ViewHistoryActivity()
         {
 
@@ -36,155 +53,307 @@ namespace TimeTrackerUniversal
             base.OnCreate(savedInstanceState);
             SetContentView(Resource.Layout.ViewHistory);
 
-            btnDayPicker = FindViewById<Button>(Resource.Id.btnDayPicker);
-            btnExit = FindViewById<Button>(Resource.Id.btnExit);
-            sqlQuery = FindViewById<EditText>(Resource.Id.sqlQuery);
-            txtOutput = FindViewById<TextView>(Resource.Id.txtOutput);
-
+            btnViewHistoryExit = FindViewById<Button>(Resource.Id.btnViewHistoryExit);
+            btnImport = FindViewById<Button>(Resource.Id.btnImport);
+            btnExport = FindViewById<Button>(Resource.Id.btnExport);
+            btnViewTimeframe = FindViewById<Button>(Resource.Id.btnViewTimeframe);
+            btnClearDB = FindViewById<Button>(Resource.Id.btnClearDB);
+            btnDeleteLastPunch = FindViewById<Button>(Resource.Id.btnDeleteLastPunch);
+            //btnDayPicker = FindViewById<Button>(Resource.Id.btnDayPicker);
+            //btnMonthPicker = FindViewById<Button>(Resource.Id.//btnMonthPicker);
+            txtImportOutput = FindViewById<TextView>(Resource.Id.txtImportOutput);
+            txtFileName = FindViewById<EditText>(Resource.Id.txtFileName);
+            datePickerFromDate = FindViewById<DatePicker>(Resource.Id.datePickerFromDate);
+            datePickerToDate = FindViewById<DatePicker>(Resource.Id.datePickerToDate);
+            txtIntervalTotalHours = FindViewById<TextView>(Resource.Id.txtIntervalTotalHours);
+            txtWeekTotalHours = FindViewById<TextView>(Resource.Id.txtWeekTotalHours);
+            txtGrossPay = FindViewById<TextView>(Resource.Id.txtGrossPay);
+            chkClearAll = FindViewById<CheckBox>(Resource.Id.chkClearAll);
             DateTime dt = DateTime.Now.ToLocalTime();//.Month
             Java.Lang.Boolean b = Java.Lang.Boolean.True;
+             
+            // btnDayPicker.Click += btnDayPicker_Clicked;
+            btnViewHistoryExit.Click += btnExit_Click;
+            btnImport.Click += btnImport_Click;
+            btnExport.Click += btnExport_Click;
+            btnClearDB.Click += btnClearDB_Click;
+            btnDeleteLastPunch.Click += btnDeleteLastPunch_Click;
+            btnViewTimeframe.Click += btnViewTimeframe_Click;
+            setTimeframes();
 
-            btnDayPicker.Click += btnDayPicker_Clicked;
-            btnExit.Click += btnExit_Click;
+        }
+        public void setTimeframes()
+        {
+            string na = "";
+            Helper.SetWeekFrame(ref TimeIntervalBegin, ref TimeIntervalEnd);
+            txtWeekTotalHours.Text = string.Empty + String.Format("{0:0.00}", Helper.GetTotalHoursForTimePeriod(TimeIntervalBegin, TimeIntervalEnd, ref na));
+            TimeIntervalBegin = Convert.ToDateTime(MainActivity.GetLocalTime().Month + "/" + "01" + "/" + MainActivity.GetLocalTime().Year);
+            TimeIntervalEnd = Convert.ToDateTime((MainActivity.GetLocalTime().Month < 12 ? MainActivity.GetLocalTime().Month + 1 : 1) + "/" + "01" + "/" + (MainActivity.GetLocalTime().Month < 12 ? MainActivity.GetLocalTime().Year : MainActivity.GetLocalTime().Year + 1));
 
+            string grossPayStr = "";
+            float hrs = Helper.GetTotalHoursForTimePeriod(TimeIntervalBegin, TimeIntervalEnd, ref grossPayStr);
+            txtIntervalTotalHours.Text = string.Empty + String.Format("{0:0.00}", hrs);
+            txtGrossPay.Text = grossPayStr;
+        }
+        private void btnDeleteLastPunch_Click(object sender, EventArgs e)
+        {
+            using (SQLiteConnection connection = SqlConnectionFactory.GetSQLiteConnectionWithLock())
+            {
+                var id = connection.Table<WorkInstance>().Last();
+                txtImportOutput.Text = $"Deleted {id.ToString()}";
+                connection.Delete<WorkInstance>(id.Oid);
+            }
+        }
+
+        private void btnExport_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                lock (_syncLock)
+                {
+                    Exported = Export();
+                }
+            }
+            catch (Exception exx)
+            {
+                Log.Error("EXCEPTION", exx.Message + "\t      " + exx.StackTrace);
+            }
+
+        }
+        public bool Export()
+        {
+            if (!Exported)
+            {
+                List<string> lines = new List<string>();// File.ReadAllLines("/sdcard/import.csv");
+                List<WorkInstance> instances = new List<WorkInstance>();
+                try
+                {
+                    btnExport.Text = "Now Exported";
+
+                    using (SQLiteConnection connection = SqlConnectionFactory.GetSQLiteConnectionWithLock())
+                    {
+                        if (!string.IsNullOrWhiteSpace(txtFileName.Text))
+                        {
+                            instances = connection.Table<WorkInstance>().Where(x => x.IsValid).Cast<WorkInstance>().ToList();
+                        }
+                    }
+                    if (instances.Count() > 0)
+                    {
+                        //**
+                        var path = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal);
+                        path = Path.Combine(path, SqlConnectionFactory.fileName);
+                        string backupDir = "/sdcard/";
+
+                        if (!Directory.Exists(backupDir)) Directory.CreateDirectory(backupDir);
+                        if (!File.Exists(Path.Combine(backupDir, SqlConnectionFactory.fileName))) File.Create(Path.Combine(backupDir, SqlConnectionFactory.fileName));
+                        if (File.Exists(path))
+                            File.Copy(path, Path.Combine(backupDir, SqlConnectionFactory.fileName), true);
+                        //**
+                        string dirName = "/sdcard";
+                        string fileName = Path.Combine(dirName, txtFileName.Text);
+                        if (!Directory.Exists(dirName))
+                        {
+                            Directory.CreateDirectory(dirName);
+                        }
+                        if (!File.Exists(fileName))
+                        {
+                            File.Create(fileName);
+                        }
+
+                        // File.OpenWrite(fileName);
+                        path = Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal), txtFileName.Text);
+                        // File.OpenWrite(path);
+                        foreach (WorkInstance wi in instances)
+                        {
+                            lines.Add(String.Format("{0:MM/dd/yyyy}", wi.Date) + "," + String.Format("{0:HH:mm:ss}", wi.ClockIn) + "," + String.Format("{0:HH:mm:ss}", wi.ClockOut));
+                            File.AppendAllText(path, String.Format("{0:MM/dd/yyyy}", wi.Date) + "," + String.Format("{0:HH:mm:ss}", wi.ClockIn) + "," + String.Format("{0:HH:mm:ss}", wi.ClockOut) + System.Environment.NewLine);
+                        }
+                        File.Copy(path, Path.Combine(backupDir, txtFileName.Text), true);
+                        // File.SetCreationTime(fileName, MainActivity.GetLocalTime());
+                    }
+                }
+                catch (Exception exception)
+                {
+                    txtImportOutput.Text = exception.ToString();
+                    Toast.MakeText(ApplicationContext, "Make Sure there is an hourly rate " + exception.ToString(), ToastLength.Long).Show();
+                    return false;
+                }
+
+                txtImportOutput.Text = $"Exported {lines.Count()} records to {txtFileName.Text}";
+            }
+            else
+            {
+                txtImportOutput.Text = $"Already exported files to {txtFileName.Text}";
+                Toast.MakeText(ApplicationContext, "Already exported!", ToastLength.Long).Show();
+                return true;
+            }
+            return true;
+        }
+        private void btnImport_Click(object sender, EventArgs e)
+        {
+            if (!Imported)
+            {
+                int recordCount = 0;
+                try
+                {
+                    Imported = true;
+                    btnImport.Text = "Now imported";
+                    List<string> dateStrings = new List<string>();
+                    string[] lines = File.ReadAllLines("/sdcard/" + txtFileName.Text);
+
+                    foreach (string line in lines)
+                    {
+                        int localCount = 0;
+                        string DATE = string.Empty;
+                        string punchIN = string.Empty;
+                        string punchOUT = string.Empty;
+                        string[] cols = line.Split(',');
+                        foreach (string col in cols)
+                        {
+                            if (!string.IsNullOrWhiteSpace(col))
+                            {
+                                if (localCount == 0)
+                                {
+                                    DATE = col;
+                                }
+                                else if ((localCount % 2) != 0) //in
+                                {
+                                    punchIN = col;
+                                }
+                                else if ((localCount % 2) == 0) //out
+                                {
+                                    try
+                                    {
+                                        using (SQLiteConnection connection = SqlConnectionFactory.GetSQLiteConnectionWithLock())
+                                        {
+                                            punchOUT = col;
+                                            DateTime resDate;
+                                            DateTime.TryParse(DATE, out resDate);
+                                            DateTime resIn;
+                                            DateTime.TryParse(punchIN, out resIn);
+                                            DateTime resOut;
+                                            DateTime.TryParse(punchOUT, out resOut);
+                                            float hourlyRate = (connection.Table<HourlyRate>().Last()).Rate;
+                                            connection.Insert(new WorkInstance()
+                                            {
+                                                Date = resDate.Date,
+                                                ClockIn = Convert.ToDateTime(String.Format("{0:HH:mm:ss}", resIn)),
+                                                ClockOut = Convert.ToDateTime(String.Format("{0:HH:mm:ss}", resOut)),
+                                                HourlyRate = hourlyRate,
+                                                IsValid = true
+                                            });
+                                            connection.Commit();
+                                        }
+                                    }
+                                    catch (Exception exception)
+                                    {
+                                        Log.Error("EXCEPTION_INSERT_WI", exception.ToString());
+                                        Toast.MakeText(ApplicationContext, "Make Sure there is an hourly rate " + exception.ToString(), ToastLength.Long).Show();
+                                    }
+                                }
+                                localCount++;
+                            }
+                        }
+
+                        //}
+                        recordCount += localCount;
+                    }
+
+                }
+                catch (Exception exception)
+                {
+                    txtImportOutput.Text = "Make Sure there is an hourly rate " + exception.ToString();
+                    Toast.MakeText(ApplicationContext, "Make Sure there is an hourly rate " + exception.ToString(), ToastLength.Long).Show();
+                }
+                txtImportOutput.Text = $"Imported {recordCount} workinstances from {txtFileName.Text}";
+            }
+            else
+            {
+                txtImportOutput.Text = "Already Imported";
+                Toast.MakeText(ApplicationContext, "Already Imported", ToastLength.Long).Show();
+            }
         }
         private void btnExit_Click(object sender, EventArgs e)
         {
             SetResult(Result.Ok);
             this.OnBackPressed();
         }
-        protected void btnDayPicker_Clicked(object sender, EventArgs e)
-        {
-            EventHandler<DatePickerDialog.DateSetEventArgs> OnDialogDateSet = new EventHandler<DatePickerDialog.DateSetEventArgs>(OnDialogDatePickerSet);
 
-            DatePickerDialog dpd = new DatePickerDialog(this, OnDialogDateSet, MainActivity.GetLocalTime().Year, MainActivity.GetLocalTime().Month - 1, MainActivity.GetLocalTime().Day);
-            try
-            {
-                Java.Lang.Reflect.Field[] datePickerDialogFields = dpd.Class.GetDeclaredFields();
-                foreach (Java.Lang.Reflect.Field datePickerDialogField in datePickerDialogFields)
-                {
-                    Log.WriteLine(LogPriority.Info, "INFOKJ", datePickerDialogField.Name);
-                    if (datePickerDialogField.Name == "mDatePicker")
-                    {
-                        datePickerDialogField.Accessible = (true);
-                        DatePicker datePicker = (DatePicker)datePickerDialogField.Get(dpd);
-                        Java.Lang.Reflect.Field[] datePickerFields = datePickerDialogField.Type.GetDeclaredFields();
-                        foreach (Java.Lang.Reflect.Field datePickerField in datePickerFields)
-                        {
-                            Log.WriteLine(LogPriority.Info, "test", datePickerField.Name);
-                            if ("mDaySpinner" == datePickerField.Name)
-                            {
-                                datePickerField.Accessible = (true);
-                                Object dayPicker = datePickerField.Get(datePicker);
-                                ((View)dayPicker).Visibility = ViewStates.Gone;
-                            }
-                        }
-                    }
-                }
-            }
-            catch (Exception)
-            {
-            }
-            dpd.Show();
+        public void SetTimeFrame(DateTime fromDate, DateTime toDate)
+        {
+            TimeIntervalBegin = fromDate;
+            TimeIntervalEnd = toDate;
         }
-        protected virtual void OnDialogDatePickerSet(object sender, DatePickerDialog.DateSetEventArgs e)
+        private void btnClearDB_Click(object sender, EventArgs e)
         {
-            //Log.Debug("DEEEEEELEELEEEEEEGEEEET", e.Month.ToString());
-            //txtMainOut.Text = e.Date.ToLongDateString();
-            //dateTxtMonth.Text = string.Empty + (e.Month + 1).ToString();
-            //dateTxtYear.Text = e.Year.ToString();
-            //if (SetMonthFrame())
-            //{
-            //    float hrs = GetTotalHoursForTimePeriod();
-            //    txtMonthTotalHours.Text = string.Empty + String.Format("{0:0.00}", hrs);
-            //    txtGrossPay.Text = "$" + String.Format("{0:0.00}", hrs * Convert.ToDouble(txtCurrentPayRate.Text));
-            //}
-            //if (SetWeekFrame())
-            //{
-            //    float whrs = GetTotalHoursForTimePeriod();
-            //    txtWeekTotalHours.Text = string.Empty + String.Format("{0:0.00}", whrs);
-            //}
-        }
-        public bool SetWeekFrame()
-        {
-            DayOfWeek dayOfWeek = MainActivity.GetLocalTime().DayOfWeek;
-            int diffB = dayOfWeek - DayOfWeek.Sunday;
-            int diffE = DayOfWeek.Saturday - dayOfWeek;
-
-            TimeSpan bts = new TimeSpan(diffB * TimeSpan.TicksPerDay);
-            TimeSpan ets = new TimeSpan((diffE + 1) * TimeSpan.TicksPerDay);
-
-            TimeIntervalBegin = MainActivity.GetLocalTime().Subtract(bts).Date;
-            TimeIntervalEnd = MainActivity.GetLocalTime().Add(ets).Date;
-
-            Log.Error("BEGINWEEK", TimeIntervalBegin.ToString());
-
-            Log.Error("ENDWEEK", TimeIntervalEnd.ToString());
-            return true;
-        }
-        public bool SetMonthFrame()
-        {
-            int endMonth = 0;
-            int endYear = 0;
-            try
+            txtFileName.Text = "deletedWorkinstances.csv";
+            btnExport_Click(sender, e);
+            using (SQLiteConnection connection = SqlConnectionFactory.GetSQLiteConnectionWithLock())
             {
-                //if (Convert.ToInt32(dateTxtMonth.Text) >= 12)
+                //foreach (WorkInstance wi in instances)
                 //{
-                //    endMonth = 1;
-                //    endYear = Convert.ToInt32(dateTxtYear.Text) + 1;
+                //    lines.Add(String.Format("{0:MM/dd/yyyy}", wi.Date) + "," + String.Format("{0:MM/dd/yyyy HH:mm:ss}", wi.ClockIn) + "," + String.Format("{0:MM/dd/yyyy HH:mm:ss}", wi.ClockOut));
                 //}
-                //else
-                //{
-                //    endMonth = Convert.ToInt32(dateTxtMonth.Text) + 1;
-                //    endYear = Convert.ToInt32(dateTxtYear.Text);
-                //}
-
-            }
-            catch (Exception e)
-            {
-                Toast.MakeText(this, "OPPPS " + e.Message, ToastLength.Long);
-                return false;
-            }
-            //TimeIntervalBegin = Convert.ToDateTime(string.Empty + dateTxtMonth.Text + "/1/" + dateTxtYear.Text).Date;
-            //TimeIntervalEnd = Convert.ToDateTime(string.Empty + endMonth + "/1/" + endYear).Date;
-            return true;
-        }
-        public bool SetMonthFrame(DatePicker DatePicker)
-        {
-            try
-            {
-                int endMonth = 0;
-                int endYear = 0;
-                if (DatePicker.Month == 12)
+                //File.WriteAllLines(fileName, lines.ToArray());
+                if (chkClearAll.Checked)
                 {
-                    endMonth = 1;
-                    endYear = DatePicker.Year + 1;
+                    connection.DropTable<WorkInstance>();
+                    connection.DropTable<HourlyRate>();
+                    connection.DropTable<FromPassword>();
+                    connection.DropTable<EmailAddresses>();
+                    connection.DropTable<ServerOut>();
+                    txtImportOutput.Text = $"Dropped tables";
                 }
                 else
                 {
-                    endMonth = DatePicker.Month + 1;
-                    endYear = DatePicker.Year;
+                    connection.DropTable<WorkInstance>();
+                    txtImportOutput.Text = $"Dropped WorkInstances";
                 }
-                TimeIntervalBegin = Convert.ToDateTime(string.Empty + DatePicker.Month + "/1/" + DatePicker.Year);
-                TimeIntervalEnd = Convert.ToDateTime(string.Empty + endMonth + "/1/" + endYear);
-            }
-            catch (Exception)
-            {
-                return false;
-            }
-            return true;
-        }
-        private float GetTotalHoursForTimePeriod()
-        {
-            float Hours = 0;
-            object[] args = { true, TimeIntervalBegin, TimeIntervalEnd };
-            using (SQLiteConnection connection = SqlConnectionFactory.GetSQLiteConnectionWithLock())
-            {
-                Hours = connection.Table<WorkInstance>().Where(x => x.IsValid && x.Date >= TimeIntervalBegin && x.Date < TimeIntervalEnd).Sum(x => x.getTotalHours());
-                //List<WorkInstance> dt = connection.Query<WorkInstance>("SELECT * FROM WorkInstance where IsValid = ? AND Date >= ? AND Date < ?", args).ToList();
-            }
-            return Hours;
-        }
+                int c = connection.CreateTable<HourlyRate>(CreateFlags.AutoIncPK);
 
+                c = connection.CreateTable<WorkInstance>(SQLite.CreateFlags.AutoIncPK);
+
+                c = connection.CreateTable<FromPassword>(SQLite.CreateFlags.AutoIncPK);
+
+                c = connection.CreateTable<ServerOut>(SQLite.CreateFlags.AutoIncPK);
+
+                c = connection.CreateTable<EmailAddresses>(SQLite.CreateFlags.AutoIncPK);
+
+            }
+
+        }
+        protected void btnViewTimeframe_Click(object sender, EventArgs e)
+        {
+            var dpfd = datePickerFromDate.DateTime;
+            DateTime fromDate = MainActivity.GetLocalTime(dpfd);
+            var dptd = datePickerToDate.DateTime;
+            DateTime toDate = MainActivity.GetLocalTime(dptd); 
+
+            //txtImportOutput.Text = $"FROM {fromDate.ToLocalTime().ToShortDateString()} {fromDate.ToLocalTime().ToLongTimeString()}\n";
+            //txtImportOutput.Text += $"TO {toDate.ToLocalTime().ToShortDateString()} {toDate.ToLocalTime().ToLongTimeString()}\n";
+            SetTimeFrame(fromDate, toDate);
+            string grossPayStr = "";
+            float hrs = Helper.GetTotalHoursForTimePeriod(TimeIntervalBegin, TimeIntervalEnd, ref grossPayStr);
+            txtImportOutput.Text = $"FROM {TimeIntervalBegin.ToLocalTime().ToShortDateString()} {TimeIntervalBegin.ToLocalTime().ToLongTimeString()}\n";
+            txtImportOutput.Text += $"TO {TimeIntervalEnd.ToLocalTime().ToShortDateString()} {TimeIntervalEnd.ToLocalTime().ToLongTimeString()}\n";
+
+            txtImportOutput.Text += string.Empty + String.Format("{0:0.00}", hrs)+"\n";
+            txtIntervalTotalHours.Text = string.Empty + String.Format("{0:0.00}", hrs) + "\n";
+            //using (SQLiteConnection connection = SqlConnectionFactory.GetSQLiteConnectionWithLock())
+            //{
+            //    //  connection.Table<HourlyRate>().Last()
+            //    txtGrossPay.Text = "$" + String.Format("{0:0.00}", hrs * Convert.ToDouble(connection.Table<HourlyRate>().Last().Rate));
+            //}
+
+            txtGrossPay.Text = grossPayStr;
+            txtImportOutput.Text += $" GrossPay {grossPayStr}\n";
+            Helper.SetWeekFrame(ref TimeIntervalBegin, ref TimeIntervalEnd);
+            txtImportOutput.Text += $"week FROM {TimeIntervalBegin.ToLocalTime().ToShortDateString()} {TimeIntervalBegin.ToLocalTime().ToLongTimeString()}\n";
+            txtImportOutput.Text += $"week TO {TimeIntervalEnd.ToLocalTime().ToShortDateString()} {TimeIntervalEnd.ToLocalTime().ToLongTimeString()}\n";
+
+            string na = "";
+            txtWeekTotalHours.Text = Helper.GetTotalHoursForTimePeriod(TimeIntervalBegin, TimeIntervalEnd, ref na).ToString();
+            txtImportOutput.Text += $"week hours : {txtWeekTotalHours.Text}\n";
+        }
     }
 }

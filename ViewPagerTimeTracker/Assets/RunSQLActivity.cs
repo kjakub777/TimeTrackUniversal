@@ -19,7 +19,7 @@ namespace TimeTrackerUniversal
     [Activity(Label = "Run SQL", MainLauncher = false, Icon = "@drawable/icon")]
     public class RunSQLActivity : Activity
     {
-        EditText sqlQuery;
+        EditText txtSqlQuery;
         TextView txtOutput;
         Button btnExecuteSql;//sqlQuery btnExecuteSql 
         Button btnExit;//sqlQuery btnExecuteSql 
@@ -37,7 +37,7 @@ namespace TimeTrackerUniversal
 
             btnExecuteSql = FindViewById<Button>(Resource.Id.btnExecuteSql);
             btnExit = FindViewById<Button>(Resource.Id.btnExit);
-            sqlQuery = FindViewById<EditText>(Resource.Id.sqlQuery);
+            txtSqlQuery = FindViewById<EditText>(Resource.Id.txtSqlQuery);
             txtOutput = FindViewById<TextView>(Resource.Id.txtOutput);
 
             DateTime dt = DateTime.Now.ToLocalTime();//.Month
@@ -53,7 +53,7 @@ namespace TimeTrackerUniversal
 
             using (SQLiteConnection connection = SqlConnectionFactory.GetSQLiteConnectionWithLock())
             {
-                int res = connection.Execute(sqlQuery.Text);
+                int res = connection.Execute(txtSqlQuery.Text);
                 txtOutput.Text += " || > " + res;
             }
         }
