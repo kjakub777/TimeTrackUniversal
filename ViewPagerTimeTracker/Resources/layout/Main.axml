@@ -89,7 +89,7 @@
                 android:text="||||||"
                 android:textAlignment="center"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textColor="@android:color/holo_blue_dark"
+                android:textColor="@android:color/holo_blue_light"
                 android:gravity="center"
                 android:scrollHorizontally="true"
                 android:scrollbars="vertical"
@@ -97,7 +97,8 @@
                 android:maxLines="2"
                 android:background="@android:color/darker_gray"
                 android:padding="2dp"
-                android:layout_margin="4sp" />
+                android:layout_margin="4sp"
+                android:backgroundTint="#ffffffff" />
         </LinearLayout>
         <LinearLayout
             android:orientation="vertical"
@@ -110,7 +111,7 @@
                 android:layout_width="match_parent"
                 android:id="@+id/txtMainOut"
                 android:gravity="center"
-                android:textColor="@android:color/background_dark"
+                android:textColor="@android:color/holo_blue_light"
                 android:background="@android:drawable/dialog_holo_dark_frame"
                 android:padding="2sp"
                 android:layout_weight="1"
@@ -143,10 +144,11 @@
                     android:layout_margin="3sp"
                     android:editable="false"
                     android:background="@android:color/darker_gray"
-                    android:textColor="@android:color/holo_blue_dark"
+                    android:textColor="@android:color/holo_blue_light"
                     android:layout_weight="1"
                     android:elevation="5sp"
-                    android:gravity="center" />
+                    android:gravity="center"
+                    android:backgroundTint="#ffffffff" />
                 <TextView
                     android:text="Total hours for month"
                     android:id="@+id/lblMonthTotalHours"
@@ -154,11 +156,12 @@
                     android:layout_height="wrap_content"
                     android:editable="false"
                     android:layout_margin="3sp"
-                    android:textColor="@android:color/holo_blue_dark"
+                    android:textColor="@android:color/holo_blue_light"
                     android:layout_weight="1"
                     android:background="@android:color/darker_gray"
                     android:elevation="5sp"
-                    android:gravity="center" />
+                    android:gravity="center"
+                    android:backgroundTint="#ffffffff" />
                 <TextView
                     android:text="Gross pay for month"
                     android:id="@+id/lblGrossPayMonth"
@@ -167,10 +170,11 @@
                     android:editable="false"
                     android:layout_margin="3sp"
                     android:background="@android:color/darker_gray"
-                    android:textColor="@android:color/holo_blue_dark"
+                    android:textColor="@android:color/holo_blue_light"
                     android:layout_weight="1"
                     android:elevation="5sp"
-                    android:gravity="center" />
+                    android:gravity="center"
+                    android:backgroundTint="#ffffffff" />
             </LinearLayout>
             <LinearLayout
                 android:orientation="horizontal"
@@ -254,7 +258,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:textColor="@android:color/holo_blue_dark"
+                android:textColor="@android:color/holo_blue_light"
                 android:elevation="10dp" />
             <Button
                 android:text="   Exit       "
@@ -265,7 +269,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@android:drawable/dialog_holo_dark_frame"
-                android:textColor="@android:color/holo_blue_dark"
+                android:textColor="@android:color/holo_blue_light"
                 android:drawableStart="@android:drawable/ic_delete"
                 android:elevation="10dp"
                 android:layout_marginBottom="5.5dp"
@@ -280,7 +284,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:textColor="@android:color/holo_blue_dark"
+                android:textColor="@android:color/holo_blue_light"
                 android:elevation="10dp"
                 android:padding="2sp" />
         </LinearLayout>
@@ -303,7 +307,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:textColor="@android:color/holo_blue_dark"
+                android:textColor="@android:color/holo_blue_light"
                 android:elevation="10dp"
                 android:layout_gravity="center" />
             <Button
@@ -316,7 +320,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:textColor="@android:color/holo_blue_dark"
+                android:textColor="@android:color/holo_blue_light"
                 android:elevation="10dp" />
             <Button
                 android:text="History"
@@ -328,7 +332,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:textColor="@android:color/holo_blue_dark"
+                android:textColor="@android:color/holo_blue_light"
                 android:elevation="10dp" />
         </LinearLayout>
     </LinearLayout>
