@@ -49,7 +49,7 @@ namespace TimeTrackerUniversal
             btnExport_Click(sender, e);
             using (SQLiteConnectionWithLock connection = SqlConnectionFactory.GetSQLiteConnectionWithREALLock())
             {
-                
+
                 if (chkClearAll.Checked)
                 {
                     connection.DropTable<WorkInstance>();
@@ -199,20 +199,20 @@ namespace TimeTrackerUniversal
             var dptd = datePickerToDate.DateTime;
             DateTime toDate = MainActivity.GetLocalTime(dptd);
 
-             SetTimeFrame(fromDate, toDate);
+            SetTimeFrame(fromDate, toDate);
             string grossPayStr = string.Empty;
             float hrs = Helper.GetTotalHoursForTimePeriod(TimeIntervalBegin, TimeIntervalEnd, ref grossPayStr);
-            txtImportOutput.Text = $"FROM {TimeIntervalBegin.ToLocalTime().ToShortDateString()} {TimeIntervalBegin.ToLocalTime().ToLongTimeString()}\n";
-            txtImportOutput.Text += $"TO {TimeIntervalEnd.ToLocalTime().ToShortDateString()} {TimeIntervalEnd.ToLocalTime().ToLongTimeString()}\n";
+            txtImportOutput.Text = $"FROM {TimeIntervalBegin.Date.Date.ToShortDateString()}  \n";
+            txtImportOutput.Text += $"TO {TimeIntervalEnd.Date.Date.ToShortDateString()}\n";
 
             txtImportOutput.Text += string.Empty + String.Format("{0:0.00}", hrs) + "\n";
             txtIntervalTotalHours.Text = string.Empty + String.Format("{0:0.00}", hrs) + "\n";
-      
+
             txtGrossPay.Text = grossPayStr;
             txtImportOutput.Text += $" GrossPay {grossPayStr}\n";
             Helper.SetWeekFrame(ref TimeIntervalBegin, ref TimeIntervalEnd);
-            txtImportOutput.Text += $"week FROM {TimeIntervalBegin.ToLocalTime().ToShortDateString()} {TimeIntervalBegin.ToLocalTime().ToLongTimeString()}\n";
-            txtImportOutput.Text += $"week TO {TimeIntervalEnd.ToLocalTime().ToShortDateString()} {TimeIntervalEnd.ToLocalTime().ToLongTimeString()}\n";
+            txtImportOutput.Text += $"week FROM {TimeIntervalBegin.Date.Date.ToShortDateString()}\n";
+            txtImportOutput.Text += $"week TO {TimeIntervalEnd.Date.Date.ToShortDateString()}\n";
 
             string na = string.Empty;
             txtWeekTotalHours.Text = Helper.GetTotalHoursForTimePeriod(TimeIntervalBegin, TimeIntervalEnd, ref na).ToString();
@@ -228,7 +228,7 @@ namespace TimeTrackerUniversal
             btnExport = FindViewById<Button>(Resource.Id.btnExport);
             btnViewTimeframe = FindViewById<Button>(Resource.Id.btnViewTimeframe);
             btnClearDB = FindViewById<Button>(Resource.Id.btnClearDB);
-            btnDeleteLastPunch = FindViewById<Button>(Resource.Id.btnDeleteLastPunch); 
+            btnDeleteLastPunch = FindViewById<Button>(Resource.Id.btnDeleteLastPunch);
             txtImportOutput = FindViewById<TextView>(Resource.Id.txtImportOutput);
             txtFileName = FindViewById<EditText>(Resource.Id.txtFileName);
             datePickerFromDate = FindViewById<DatePicker>(Resource.Id.datePickerFromDate);
@@ -239,7 +239,7 @@ namespace TimeTrackerUniversal
             chkClearAll = FindViewById<CheckBox>(Resource.Id.chkClearAll);
             DateTime dt = DateTime.Now.ToLocalTime();//.Month
             Java.Lang.Boolean b = Java.Lang.Boolean.True;
-             
+
             btnViewHistoryExit.Click += btnExit_Click;
             btnImport.Click += btnImport_Click;
             btnExport.Click += btnExport_Click;
@@ -252,78 +252,195 @@ namespace TimeTrackerUniversal
 
         public bool Export()
         {
-            if (!Exported)
+            if (!string.IsNullOrWhiteSpace(txtFileName.Text))
             {
-                List<string> lines = new List<string>(); 
-                List<WorkInstance> instances = new List<WorkInstance>();
-                try
+                if (!Exported)
                 {
-                    btnExport.Text = "Now Exported";
+                    //prepare
+                    List<string> lines = new List<string>();
+                    try
+                    {
 
-                    using (SQLiteConnectionWithLock connection = SqlConnectionFactory.GetSQLiteConnectionWithREALLock())
-                    {
-                        if (!string.IsNullOrWhiteSpace(txtFileName.Text))
-                        {
-                            instances = connection.Table<WorkInstance>().Where(x => x.IsValid).Cast<WorkInstance>().ToList();
-                        }
-                    }
-                    if (instances.Count() > 0)
-                    {
+                        List<WorkInstance> workinstances = new List<WorkInstance>();
+                        List<HourlyRate> hourlyrates = new List<HourlyRate>();
+                        List<EmailAddresses> emailaddresses = new List<EmailAddresses>();
+                        List<FromPassword> frompasswords = new List<FromPassword>();
+                        List<ServerOut> serverouts = new List<ServerOut>();
+                        var path = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal);
+                        path = Path.Combine(path, SqlConnectionFactory.fileName);
+                        string backupDir = "/sdcard/";
+
+                        if (!Directory.Exists(backupDir))
+                            Directory.CreateDirectory(backupDir);
+                        if (!File.Exists(Path.Combine(backupDir, SqlConnectionFactory.fileName)))
+                            File.Create(Path.Combine(backupDir, SqlConnectionFactory.fileName));
+                        if (File.Exists(path))
+                            File.Copy(path, Path.Combine(backupDir, SqlConnectionFactory.fileName), true);
                         //**
-                        try
-                        {
-                            var path = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal);
-                            path = Path.Combine(path, SqlConnectionFactory.fileName);
-                            string backupDir = "/sdcard/";
 
-                            if (!Directory.Exists(backupDir)) Directory.CreateDirectory(backupDir);
-                            if (!File.Exists(Path.Combine(backupDir, SqlConnectionFactory.fileName))) File.Create(Path.Combine(backupDir, SqlConnectionFactory.fileName));
-                            if (File.Exists(path))
-                                File.Copy(path, Path.Combine(backupDir, SqlConnectionFactory.fileName), true);
+                        string fileName = Path.Combine(backupDir, txtFileName.Text);
+                        string fileNamesql = Path.Combine(backupDir, txtFileName.Text + ".sql");
+                        if (!Directory.Exists(backupDir))
+                        {
+                            Directory.CreateDirectory(backupDir);
+                        }
+                        if (File.Exists(fileName))
+                        {
+                            File.Delete(fileName);
+                            File.Create(fileName);
+                        }
+                        else
+                        {
+                            File.Create(fileName);
+                        }
+
+                        if (File.Exists(fileNamesql))
+                        {
+                            File.Delete(fileNamesql);
+                            File.Create(fileNamesql);
+                        }
+                        else
+                        {
+                            File.Create(fileNamesql);
+                        }
+
+
+                        path = Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal), txtFileName.Text);
+                        var pathsql = Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal), txtFileName.Text + ".sql");
+                        //**
+
+                        //****get data
+                        using (SQLiteConnectionWithLock connection = SqlConnectionFactory.GetSQLiteConnectionWithREALLock())
+                        {
+                            workinstances = connection.Table<WorkInstance>().Where(x => x.IsValid).Cast<WorkInstance>().ToList();
+                        }
+                        using (SQLiteConnectionWithLock connection = SqlConnectionFactory.GetSQLiteConnectionWithREALLock())
+                        {
+                            hourlyrates = connection.Table<HourlyRate>().Where(x => x.IsValid).Cast<HourlyRate>().ToList();
+                        }
+                        using (SQLiteConnectionWithLock connection = SqlConnectionFactory.GetSQLiteConnectionWithREALLock())
+                        {
+                            emailaddresses = connection.Table<EmailAddresses>().Where(x => x.IsValid).Cast<EmailAddresses>().ToList();
+                        }
+                        using (SQLiteConnectionWithLock connection = SqlConnectionFactory.GetSQLiteConnectionWithREALLock())
+                        {
+                            frompasswords = connection.Table<FromPassword>().Where(x => x.IsValid).Cast<FromPassword>().ToList();
+                        }
+                        using (SQLiteConnectionWithLock connection = SqlConnectionFactory.GetSQLiteConnectionWithREALLock())
+                        {
+                            serverouts = connection.Table<ServerOut>().Where(x => x.IsValid).Cast<ServerOut>().ToList();
+                        }
+                        if (workinstances.Count() > 0)
+                        {
                             //**
-                            string dirName = "/sdcard";
-                            string fileName = Path.Combine(dirName, txtFileName.Text);
-                            if (!Directory.Exists(dirName))
+                            try
                             {
-                                Directory.CreateDirectory(dirName);
-                            }
-                            if (!File.Exists(fileName))
-                            {
-                                File.Create(fileName);
-                            }
 
-                            path = Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal), txtFileName.Text);
-
-                            foreach (WorkInstance wi in instances)
-                            {
-                                lines.Add(String.Format("{0:MM/dd/yyyy}", wi.Date) + "," + String.Format("{0:HH:mm:ss}", wi.ClockIn) + "," + String.Format("{0:HH:mm:ss}", wi.ClockOut));
-                                File.AppendAllText(path, String.Format("{0:MM/dd/yyyy}", wi.Date) + "," + String.Format("{0:HH:mm:ss}", wi.ClockIn) + "," + String.Format("{0:HH:mm:ss}", wi.ClockOut) + System.Environment.NewLine);
+                                foreach (WorkInstance wi in workinstances)
+                                {
+                                    lines.Add(String.Format("{0:MM/dd/yyyy}", wi.Date) + "," + String.Format("{0:HH:mm:ss}", wi.ClockIn) + "," + String.Format("{0:HH:mm:ss}", wi.ClockOut));
+                                    File.AppendAllText(path, String.Format("{0:MM/dd/yyyy}", wi.Date) + "," + String.Format("{0:HH:mm:ss}", wi.ClockIn) + "," + String.Format("{0:HH:mm:ss}", wi.ClockOut) + System.Environment.NewLine);
+                                    File.AppendAllText(pathsql, $"INSERT INTO WorkInstance(Date,ClockIn,ClockOut,IsValid,HourlyRate)VALUES({wi.Date.Ticks},{wi.ClockIn.Ticks},{wi.ClockOut.Ticks},1,{wi.HourlyRate});{System.Environment.NewLine}");
+                                }
+                                //canonly read in workinstances as csv for now, res have to be sql
+                                File.Copy(path, Path.Combine(backupDir, txtFileName.Text), true);
                             }
-                            File.Copy(path, Path.Combine(backupDir, txtFileName.Text), true);
+                            catch (IOException x)
+                            {
+                                txtImportOutput.Text = "FileIO Exception, keep tring and it will work!" + x.Message;
+                                Toast.MakeText(ApplicationContext, "FileIO Exception, keep tring and it will work!" + x.Message, ToastLength.Long).Show(); ;
+                            }
 
                         }
-                        catch (IOException x)
-                        {
-                            txtImportOutput.Text = "FileIO Exception, keep tring and it will work!" + x.Message;
-                            Toast.MakeText(ApplicationContext, "FileIO Exception, keep tring and it will work!" + x.Message, ToastLength.Long).Show(); ;
+                        if (emailaddresses.Count() > 0)
+                        {  //**
+                            try
+                            {
+
+                                foreach (var ea in emailaddresses)
+                                {
+                                    File.AppendAllText(pathsql, $"INSERT INTO EmailAddresses(Date,Email,IsValid,EmailType) VALUES({ea.Date.Ticks},'{ea.Email}',1,{ea.EmailType});{System.Environment.NewLine}");
+                                }
+
+                            }
+                            catch (IOException x)
+                            {
+                                txtImportOutput.Text = "FileIO Exception, keep tring and it will work!" + x.Message;
+                                Toast.MakeText(ApplicationContext, "FileIO Exception, keep tring and it will work!" + x.Message, ToastLength.Long).Show(); ;
+                            }
                         }
+
+                        if (frompasswords.Count() > 0)
+                        {  //**
+                            try
+                            {
+                                var pw = frompasswords.Last();
+                                File.AppendAllText(pathsql, $"INSERT INTO FromPassword(Date,Pass,IsValid) VALUES({pw.Date.Ticks},'{pw.Pass}',1);{System.Environment.NewLine}");
+
+
+                            }
+                            catch (IOException x)
+                            {
+                                txtImportOutput.Text = "FileIO Exception, keep tring and it will work!" + x.Message;
+                                Toast.MakeText(ApplicationContext, "FileIO Exception, keep tring and it will work!" + x.Message, ToastLength.Long).Show(); ;
+                            }
+                        }
+                        if (hourlyrates.Count() > 0)
+                        {  //**
+                            try
+                            {
+                                foreach (var hr in hourlyrates)
+                                {
+                                    File.AppendAllText(pathsql, $"INSERT INTO HourlyRate(Date,Rate,IsValid) VALUES({hr.Date.Ticks},{hr.Rate},1);{System.Environment.NewLine}");
+                                }
+
+                            }
+                            catch (IOException x)
+                            {
+                                txtImportOutput.Text = "FileIO Exception, keep tring and it will work!" + x.Message;
+                                Toast.MakeText(ApplicationContext, "FileIO Exception, keep tring and it will work!" + x.Message, ToastLength.Long).Show(); ;
+                            }
+                        }
+                        if (serverouts.Count() > 0)
+                        {  //**
+                            try
+                            {
+                                var so = serverouts.Last();
+                                File.AppendAllText(pathsql, $"INSERT INTO ServerOut(Date,Server,IsValid) VALUES({so.Date.Ticks},'{so.Server}',1);{System.Environment.NewLine}");
+
+
+                            }
+                            catch (IOException x)
+                            {
+                                txtImportOutput.Text = "FileIO Exception, keep tring and it will work!" + x.Message;
+                                Toast.MakeText(ApplicationContext, "FileIO Exception, keep tring and it will work!" + x.Message, ToastLength.Long).Show(); ;
+                            }
+                        }
+
+                        File.Copy(pathsql, Path.Combine(backupDir, txtFileName.Text + ".sql"), true);
                     }
-                }
-                catch (Exception exception)
-                {
-                    txtImportOutput.Text = exception.ToString();
-                    Toast.MakeText(ApplicationContext, "Make Sure there is an hourly rate " + exception.ToString(), ToastLength.Long).Show();
-                    return false;
-                }
+                    catch (Exception exception)
+                    {
+                        txtImportOutput.Text = exception.ToString();
+                        Toast.MakeText(ApplicationContext, "Make Sure there is an hourly rate " + exception.ToString(), ToastLength.Long).Show();
+                        return false;
+                    }
+                    finally
+                    {
+                        File.Delete(Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal), txtFileName.Text));
+                        File.Delete(Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal), txtFileName.Text + ".sql"));
+                    }
 
-                txtImportOutput.Text = $"Exported {lines.Count()} records to {txtFileName.Text}";
+                    txtImportOutput.Text = $"Exported {lines.Count()} records to {txtFileName.Text}";
+                }
+                else
+                {
+                    txtImportOutput.Text = $"Already exported files to {txtFileName.Text}";
+                    Toast.MakeText(ApplicationContext, "Already exported!", ToastLength.Long).Show();
+                    return true;
+                }
             }
-            else
-            {
-                txtImportOutput.Text = $"Already exported files to {txtFileName.Text}";
-                Toast.MakeText(ApplicationContext, "Already exported!", ToastLength.Long).Show();
-                return true;
-            }
+            btnExport.Text = "Now Exported";
             return true;
         }
 

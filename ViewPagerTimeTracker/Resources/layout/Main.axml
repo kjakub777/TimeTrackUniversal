@@ -86,7 +86,7 @@
                 android:id="@+id/txtLastPunch"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="||||||"
+                android:text="Last Punch"
                 android:textAlignment="center"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="@android:color/holo_blue_light"
@@ -106,7 +106,7 @@
             android:layout_height="match_parent"
             android:id="@+id/OutputText">
             <TextView
-                android:text="....&gt;"
+                android:text="||||||___Punch Result___||||||"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:layout_width="match_parent"
                 android:id="@+id/txtMainOut"
@@ -148,7 +148,8 @@
                     android:layout_weight="1"
                     android:elevation="5sp"
                     android:gravity="center"
-                    android:backgroundTint="#ffffffff" />
+                    android:backgroundTint="#ffffffff"
+                    android:clickable="true" />
                 <TextView
                     android:text="Total hours for month"
                     android:id="@+id/lblMonthTotalHours"
@@ -161,7 +162,8 @@
                     android:background="@android:color/darker_gray"
                     android:elevation="5sp"
                     android:gravity="center"
-                    android:backgroundTint="#ffffffff" />
+                    android:backgroundTint="#ffffffff"
+                    android:clickable="true" />
                 <TextView
                     android:text="Gross pay for month"
                     android:id="@+id/lblGrossPayMonth"
@@ -174,7 +176,8 @@
                     android:layout_weight="1"
                     android:elevation="5sp"
                     android:gravity="center"
-                    android:backgroundTint="#ffffffff" />
+                    android:backgroundTint="#ffffffff"
+                    android:clickable="true" />
             </LinearLayout>
             <LinearLayout
                 android:orientation="horizontal"
@@ -266,7 +269,7 @@
                 android:textAllCaps="false"
                 android:gravity="center_vertical"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@android:drawable/dialog_holo_dark_frame"
                 android:textColor="@android:color/holo_blue_light"

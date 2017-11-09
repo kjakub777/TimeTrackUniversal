@@ -207,21 +207,11 @@ namespace TimeTrackerUniversal
 
             // Set our view from the "main" layout resource
             SetContentView(Resource.Layout.Main);
-            //backup db
-            var path = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal);
-            path = Path.Combine(path, SqlConnectionFactory.fileName);
-            string backupDir = "/sdcard/";
-            if (fresh)
-            {
-                if (!Directory.Exists(backupDir)) Directory.CreateDirectory(backupDir);
-                if (!File.Exists(Path.Combine(backupDir, SqlConnectionFactory.fileName))) File.Create(Path.Combine(backupDir, SqlConnectionFactory.fileName));
-                if (File.Exists(path))
-                    File.Copy(path, Path.Combine(backupDir, SqlConnectionFactory.fileName), true);
-                fresh = false;
-            }
+          
             txtLastPunch = FindViewById<TextView>(Resource.Id.txtLastPunch);
-            txtWeekTotalHours = FindViewById<TextView>(Resource.Id.txtWeekTotalHours);
             txtMainOut = FindViewById<TextView>(Resource.Id.txtMainOut);
+
+            txtWeekTotalHours = FindViewById<TextView>(Resource.Id.txtWeekTotalHours);           
             txtGrossPay = FindViewById<TextView>(Resource.Id.txtGrossPay);
             txtMonthTotalHours = FindViewById<TextView>(Resource.Id.txtMonthTotalHours);
             btnEditPunch = FindViewById<Button>(Resource.Id.btnEditPunch);
@@ -249,10 +239,12 @@ namespace TimeTrackerUniversal
             btnViewHistory.Click += btnViewHistory_Click;// = FindViewById<Button>(Resource.Id.btnClockIn);
 
             btnChangeEmails.Click += BtnChangeEmails_Clicked;
-
+            txtWeekTotalHours.Click += setStats;
+            txtGrossPay.Click += setStats;
+            txtMonthTotalHours.Click += setStats;
             RealClockPunch = ForReal.Checked;
-
-            using (SQLiteConnection connection = SqlConnectionFactory.GetSQLiteConnection())
+            setStats(null, null);
+            using (SQLiteConnectionWithLock connection = SqlConnectionFactory.GetSQLiteConnectionWithREALLock())
             {
                 Log.Debug("DATABASE", connection.ExecuteScalar<string>("PRAGMA database_list"));
 
@@ -289,6 +281,23 @@ namespace TimeTrackerUniversal
                 txtMainOut.Text = $"ERR {Ex.Message}";
             }
 
+        }
+        void setStats(object sender, EventArgs args)
+        {
+            //backup db
+          
+            string backupDir = "/sdcard/";
+            if (fresh)
+            {
+                if (!Directory.Exists(backupDir)) Directory.CreateDirectory(backupDir);
+                if (!File.Exists(Path.Combine(backupDir, SqlConnectionFactory.fileName)))
+                    File.Create(Path.Combine(backupDir, SqlConnectionFactory.fileName));
+                if (File.Exists(SqlConnectionFactory.FULLDBFILEPATH))
+                    File.Copy(SqlConnectionFactory.FULLDBFILEPATH, Path.Combine(backupDir, SqlConnectionFactory.fileName), true);
+                fresh = false;
+            }
+            Toast.MakeText(ApplicationContext, "DB copied!!",ToastLength.Short).Show();
+
             string na = string.Empty;
             Helper.SetWeekFrame(ref TimeIntervalBegin, ref TimeIntervalEnd);
             txtWeekTotalHours.Text = string.Empty + String.Format("{0:0.00}", Helper.GetTotalHoursForTimePeriod(TimeIntervalBegin, TimeIntervalEnd, ref na));
@@ -298,9 +307,8 @@ namespace TimeTrackerUniversal
             string grossPayStr = string.Empty;
             float hrs = Helper.GetTotalHoursForTimePeriod(TimeIntervalBegin, TimeIntervalEnd, ref grossPayStr);
             txtMonthTotalHours.Text = string.Empty + String.Format("{0:0.00}", hrs);
-            txtGrossPay.Text = grossPayStr;
+            txtGrossPay.Text = string.Format("{0:f}", grossPayStr); ;
         }
-
         public void ButtonClockedInOut_Handler(object sender, EventArgs e)
         {
             output = " ";

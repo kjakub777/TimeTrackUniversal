@@ -47,19 +47,38 @@ namespace TimeTrackerUniversal.Assets
             object[] args = { true, TimeIntervalBegin, TimeIntervalEnd };
             using (SQLiteConnectionWithLock connection = SqlConnectionFactory.GetSQLiteConnectionWithREALLock())
             {
-                List<WorkInstance> instances = connection.Table<WorkInstance>().Where(x => x.IsValid && x.Date >= TimeIntervalBegin && x.Date < TimeIntervalEnd).Cast<WorkInstance>().ToList();
-                foreach (var wi in instances)
+                try
                 {
-                    Hours += wi.TotalHours;
-                    gross += wi.TotalHours * wi.HourlyRate;
-                }
-                // Hours = connection.Table<WorkInstance>().Where(x => x.IsValid && x.Date >= TimeIntervalBegin && x.Date < TimeIntervalEnd).Sum(x => x.getTotalHours());
+                    List<WorkInstance> instances = connection.Table<WorkInstance>().Where(x => x.IsValid && x.Date >= TimeIntervalBegin.Date.Date && x.Date <= TimeIntervalEnd.Date.Date).Cast<WorkInstance>().ToList();
+                    instances.ForEach((y) =>
+                    {
+                        var th = y.TotalHours;
+                        Hours += th;
+                        gross += th * y.HourlyRate;
+                    });
+                    // Hours = connection.Table<WorkInstance>().Where(x => x.IsValid && x.Date >= TimeIntervalBegin && x.Date < TimeIntervalEnd).Sum(x => x.getTotalHours());
+                    // gross = connection.Table<WorkInstance>().Where(x => x.IsValid && x.Date >= TimeIntervalBegin && x.Date < TimeIntervalEnd).Sum(x => x.getTotalHours());
 
-                //List<WorkInstance> dt = connection.Query<WorkInstance>("SELECT * FROM WorkInstance where IsValid = ? AND Date >= ? AND Date < ?", args).ToList();
-               // txtGrossPay.Text = $"${gross}";
-                grossPayStr = $"${gross}";
+                    //List<WorkInstance> dt = connection.Query<WorkInstance>("SELECT * FROM WorkInstance where IsValid = ? AND Date >= ? AND Date < ?", args).ToList();
+                    // txtGrossPay.Text = $"${gross}";
+                    grossPayStr = string.Format("${0:f}", gross);
+                }
+                catch (Exception  )
+                {
+                  //  Toast.MakeText(ApplicationContext, "DB copied!!", ToastLength.Short).Show();
+                }
             }
             return Hours;
         }
     }
-}
+}/*
+                    var begin = TimeIntervalBegin.Ticks;// Math.Floor(.ToOADate());// *DateTime.;
+                    var end = TimeIntervalEnd.Ticks;// Math.Floor(TimeIntervalEnd.ToOADate());
+                    List<WorkInstance> instances = connection.Table<WorkInstance>().Where(x => x.IsValid && x.Date.Ticks >= begin && x.Date.Ticks <= end).Cast<WorkInstance>().ToList();
+                    instances.ForEach((y) =>
+                    {
+                        var th = y.TotalHours;
+                        Hours +=th;
+                        gross += th * y.HourlyRate;
+                    });
+*/

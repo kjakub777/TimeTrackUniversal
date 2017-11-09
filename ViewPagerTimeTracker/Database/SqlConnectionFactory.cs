@@ -5,37 +5,49 @@ namespace TimeTrackerUniversal.Database
 {
     public class SqlConnectionFactory
     {
-        public static string fileName = "TimeTrackerUniversal.db3";
+        public static string fileName = "TimeTrackerUniversalFinal.db3";
+
+        public static string fullPath = System.IO.Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal), "db");
+        public static string FULLDBFILEPATH = Path.Combine(fullPath, fileName);
+        public static bool init { get { return File.Exists(FULLDBFILEPATH); } }
 
         public static SQLiteConnection GetSQLiteConnectionWithLock()
         {
-
-            var path = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal);
-            path = Path.Combine(path, fileName);
-            var connection = new SQLiteConnection(path);
+            var connection = new SQLiteConnection(FULLDBFILEPATH);
 
             return connection;
         }
         public static SQLiteConnection GetSQLiteConnection()
         {
-
-            var path = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal);
-            path = Path.Combine(path, fileName);
-            var connection = new SQLiteConnection(path);
+            var connection = new SQLiteConnection(FULLDBFILEPATH);
 
             return connection;
         }
 
         public static SQLiteConnectionWithLock GetSQLiteConnectionWithREALLock()
         {
-            var documentsPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal);
+            try
+            {
+                if (!init)
+                {
+                    System.IO.Directory.CreateDirectory(fullPath);
+                    System.IO.File.Create(FULLDBFILEPATH); 
+                   // var connection = new SQLiteConnectionWithLock(new SQLiteConnectionString(FULLDBFILEPATH, true), SQLiteOpenFlags.Create);
 
-            string path = Path.Combine(documentsPath, fileName);
+                    return new SQLiteConnectionWithLock(new SQLiteConnectionString(FULLDBFILEPATH, true), SQLiteOpenFlags.ReadWrite);
+                }
+                else
+                {
+                     return new SQLiteConnectionWithLock(new SQLiteConnectionString(FULLDBFILEPATH, true), SQLiteOpenFlags.ReadWrite);                  
+                }
+            }
+            catch (System.Exception x)
+            {
+                System.Console.WriteLine(x.ToString());
 
-            var param = new SQLiteConnectionString(path, true);
-            var connection = new SQLiteConnectionWithLock(param, SQLiteOpenFlags.ReadWrite);
+            }
 
-            return connection;
+            return null;
         }
         //var sqliteFilename = "AAAAAAAA.db3";
         //string documentsPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal); // Documents folder
