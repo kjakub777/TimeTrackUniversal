@@ -82,8 +82,10 @@ namespace TimeTrackerUniversal
             using (SQLiteConnectionWithLock connection = SqlConnectionFactory.GetSQLiteConnectionWithREALLock())
             {
                 var id = connection.Table<WorkInstance>().Last();
-                txtImportOutput.Text = $"Deleted {id.ToString()}";
+                txtImportOutput.Text = $"Deleted {id.ToString()}\n";
                 connection.Delete<WorkInstance>(id.Oid);
+
+                txtImportOutput.Text += "Last Punch: "+GetLastPunch();
             }
         }
         private void btnExit_Click(object sender, EventArgs e)
@@ -180,14 +182,15 @@ namespace TimeTrackerUniversal
                 }
                 catch (Exception exception)
                 {
-                    txtImportOutput.Text = "Make Sure there is an hourly rate " + exception.ToString();
+                    txtImportOutput.Text = "Make Sure there is an hourly rate " + exception.ToString()+ "\nLast Punch: " + GetLastPunch(); 
                     Toast.MakeText(ApplicationContext, "Make Sure there is an hourly rate " + exception.ToString(), ToastLength.Long).Show();
                 }
-                txtImportOutput.Text = $"Imported {recordCount} workinstances from {txtFileName.Text}";
+                txtImportOutput.Text = $"Imported {recordCount} workinstances from {txtFileName.Text}\n";
+                txtImportOutput.Text += "Last Punch: " + GetLastPunch();
             }
             else
             {
-                txtImportOutput.Text = "Already Imported";
+                txtImportOutput.Text = "Already Imported\nLast Punch: " + GetLastPunch();
                 Toast.MakeText(ApplicationContext, "Already Imported", ToastLength.Long).Show();
             }
         }
@@ -195,15 +198,15 @@ namespace TimeTrackerUniversal
         protected void btnViewTimeframe_Click(object sender, EventArgs e)
         {
             var dpfd = datePickerFromDate.DateTime;
-            DateTime fromDate = MainActivity.GetLocalTime(dpfd);
+            TimeIntervalBegin = MainActivity.GetLocalTime(dpfd.AddDays(1));
             var dptd = datePickerToDate.DateTime;
-            DateTime toDate = MainActivity.GetLocalTime(dptd);
+            TimeIntervalEnd = MainActivity.GetLocalTime(dptd.AddDays(1));
+            float totalFromPeriod = 0f;
 
-            SetTimeFrame(fromDate, toDate);
             string grossPayStr = string.Empty;
-            float hrs = Helper.GetTotalHoursForTimePeriod(TimeIntervalBegin, TimeIntervalEnd, ref grossPayStr);
-            txtImportOutput.Text = $"FROM {TimeIntervalBegin.Date.Date.ToShortDateString()}  \n";
-            txtImportOutput.Text += $"TO {TimeIntervalEnd.Date.Date.ToShortDateString()}\n";
+            float hrs = Helper.GetTotalHoursForTimePeriod(TimeIntervalBegin, TimeIntervalEnd, ref grossPayStr, ref totalFromPeriod);
+            txtImportOutput.Text = $"FROM {TimeIntervalBegin.Date.Date.DayOfWeek}  {TimeIntervalBegin.Date.Date.ToShortDateString()} {TimeIntervalBegin.Date.Date.ToLongTimeString()}  \n";
+            txtImportOutput.Text += $"TO {TimeIntervalEnd.Date.Date.DayOfWeek}  {TimeIntervalEnd.Date.Date.ToShortDateString()} {TimeIntervalEnd.Date.Date.ToLongTimeString()}\n";
 
             txtImportOutput.Text += string.Empty + String.Format("{0:0.00}", hrs) + "\n";
             txtIntervalTotalHours.Text = string.Empty + String.Format("{0:0.00}", hrs) + "\n";
@@ -211,11 +214,11 @@ namespace TimeTrackerUniversal
             txtGrossPay.Text = grossPayStr;
             txtImportOutput.Text += $" GrossPay {grossPayStr}\n";
             Helper.SetWeekFrame(ref TimeIntervalBegin, ref TimeIntervalEnd);
-            txtImportOutput.Text += $"week FROM {TimeIntervalBegin.Date.Date.ToShortDateString()}\n";
-            txtImportOutput.Text += $"week TO {TimeIntervalEnd.Date.Date.ToShortDateString()}\n";
+            txtImportOutput.Text += $"week FROM {TimeIntervalBegin.Date.Date.DayOfWeek} {TimeIntervalBegin.Date.Date.ToShortDateString()}\n";
+            txtImportOutput.Text += $"week TO {TimeIntervalEnd.Date.Date.DayOfWeek} {TimeIntervalEnd.Date.Date.ToShortDateString()}\n";
 
             string na = string.Empty;
-            txtWeekTotalHours.Text = Helper.GetTotalHoursForTimePeriod(TimeIntervalBegin, TimeIntervalEnd, ref na).ToString();
+            txtWeekTotalHours.Text = Helper.GetTotalHoursForTimePeriod(TimeIntervalBegin, TimeIntervalEnd, ref na, ref totalFromPeriod).ToString();
             txtImportOutput.Text += $"week hours : {txtWeekTotalHours.Text}\n";
         }
         protected override void OnCreate(Bundle savedInstanceState)
@@ -246,16 +249,29 @@ namespace TimeTrackerUniversal
             btnClearDB.Click += btnClearDB_Click;
             btnDeleteLastPunch.Click += btnDeleteLastPunch_Click;
             btnViewTimeframe.Click += btnViewTimeframe_Click;
-            setTimeframes();
 
+            setTimeframes();
+           txtImportOutput.Text = GetLastPunch();
+        }
+        public string GetLastPunch()
+        {
+            using (SQLiteConnectionWithLock connection = SqlConnectionFactory.GetSQLiteConnectionWithREALLock())
+            {
+                var v = connection.Table<WorkInstance>().Any() ? connection.Table<WorkInstance>().Last() : null;
+                return v != null ? v.ClockIn == v.ClockOut ? $"In {v.ClockIn.ToString()}" : $"Out {v.ClockOut.ToString()}" : "NULL";
+            }
         }
 
         public bool Export()
         {
             if (!string.IsNullOrWhiteSpace(txtFileName.Text))
             {
-                if (!Exported)
+                if (!Exported || true)
                 {
+                    string p;
+
+                    if (!txtFileName.Text.StartsWith(p = MainActivity.GetDigitDate()))
+                        txtFileName.Text = p + txtFileName.Text;
                     //prepare
                     List<string> lines = new List<string>();
                     try
@@ -266,6 +282,7 @@ namespace TimeTrackerUniversal
                         List<EmailAddresses> emailaddresses = new List<EmailAddresses>();
                         List<FromPassword> frompasswords = new List<FromPassword>();
                         List<ServerOut> serverouts = new List<ServerOut>();
+
                         var path = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal);
                         path = Path.Combine(path, SqlConnectionFactory.fileName);
                         string backupDir = "/sdcard/";
@@ -431,11 +448,11 @@ namespace TimeTrackerUniversal
                         File.Delete(Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal), txtFileName.Text + ".sql"));
                     }
 
-                    txtImportOutput.Text = $"Exported {lines.Count()} records to {txtFileName.Text}";
+                    txtImportOutput.Text = $"Exported {lines.Count()} records to {txtFileName.Text}\nLast Punch: " + GetLastPunch();
                 }
                 else
                 {
-                    txtImportOutput.Text = $"Already exported files to {txtFileName.Text}";
+                    txtImportOutput.Text = $"Already exported files to {txtFileName.Text}\nLast Punch: " + GetLastPunch(); ;
                     Toast.MakeText(ApplicationContext, "Already exported!", ToastLength.Long).Show();
                     return true;
                 }
@@ -446,19 +463,19 @@ namespace TimeTrackerUniversal
 
         public void SetTimeFrame(DateTime fromDate, DateTime toDate)
         {
-            TimeIntervalBegin = fromDate;
-            TimeIntervalEnd = toDate;
+
         }
         public void setTimeframes()
         {
+            float totalFromPeriod = 0f;
             string na = string.Empty;
             Helper.SetWeekFrame(ref TimeIntervalBegin, ref TimeIntervalEnd);
-            txtWeekTotalHours.Text = string.Empty + String.Format("{0:0.00}", Helper.GetTotalHoursForTimePeriod(TimeIntervalBegin, TimeIntervalEnd, ref na));
+            txtWeekTotalHours.Text = string.Empty + String.Format("{0:0.00}", Helper.GetTotalHoursForTimePeriod(TimeIntervalBegin, TimeIntervalEnd, ref na, ref totalFromPeriod));
             TimeIntervalBegin = Convert.ToDateTime(MainActivity.GetLocalTime().Month + "/" + "01" + "/" + MainActivity.GetLocalTime().Year);
             TimeIntervalEnd = Convert.ToDateTime((MainActivity.GetLocalTime().Month < 12 ? MainActivity.GetLocalTime().Month + 1 : 1) + "/" + "01" + "/" + (MainActivity.GetLocalTime().Month < 12 ? MainActivity.GetLocalTime().Year : MainActivity.GetLocalTime().Year + 1));
 
             string grossPayStr = string.Empty;
-            float hrs = Helper.GetTotalHoursForTimePeriod(TimeIntervalBegin, TimeIntervalEnd, ref grossPayStr);
+            float hrs = Helper.GetTotalHoursForTimePeriod(TimeIntervalBegin, TimeIntervalEnd, ref grossPayStr, ref totalFromPeriod);
             txtIntervalTotalHours.Text = string.Empty + String.Format("{0:0.00}", hrs);
             txtGrossPay.Text = grossPayStr;
         }

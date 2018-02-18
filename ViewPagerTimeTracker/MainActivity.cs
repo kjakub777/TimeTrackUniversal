@@ -5,6 +5,7 @@ using Android.Util;
 using Android.Widget;
 using SQLite;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using TimeTrackerUniversal.Assets;
@@ -37,6 +38,7 @@ namespace TimeTrackerUniversal
         bool fresh = true;
 
         private bool OUT = false;
+
 
         bool RealClockPunch = false;
         private DateTime TimeIntervalBegin;
@@ -88,6 +90,21 @@ namespace TimeTrackerUniversal
 
         private void btnEditPunch_Click(object sender, EventArgs e)
         {
+            try
+            {
+                lock (_syncLock)
+                {
+                    Intent intent = new Intent(this.ApplicationContext, typeof(EditPunchActivity));
+                    intent.SetFlags(ActivityFlags.ForwardResult);
+                    intent.SetFlags(ActivityFlags.ReceiverForeground);
+                    StartActivity(intent);
+                }
+            }
+            catch (Exception exx)
+            {
+                Toast.MakeText(ApplicationContext, exx.Message + "\t      " + exx.StackTrace, ToastLength.Long).Show();
+                Log.Error("EXCEPTION", exx.Message + "\t      " + exx.StackTrace);
+            }
             Toast.MakeText(ApplicationContext, "Need to Implement!!", ToastLength.Long).Show();
         }
 
@@ -204,14 +221,14 @@ namespace TimeTrackerUniversal
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
-
+            Gross_net = true;
             // Set our view from the "main" layout resource
             SetContentView(Resource.Layout.Main);
-          
+
             txtLastPunch = FindViewById<TextView>(Resource.Id.txtLastPunch);
             txtMainOut = FindViewById<TextView>(Resource.Id.txtMainOut);
 
-            txtWeekTotalHours = FindViewById<TextView>(Resource.Id.txtWeekTotalHours);           
+            txtWeekTotalHours = FindViewById<TextView>(Resource.Id.txtWeekTotalHours);
             txtGrossPay = FindViewById<TextView>(Resource.Id.txtGrossPay);
             txtMonthTotalHours = FindViewById<TextView>(Resource.Id.txtMonthTotalHours);
             btnEditPunch = FindViewById<Button>(Resource.Id.btnEditPunch);
@@ -239,7 +256,7 @@ namespace TimeTrackerUniversal
             btnViewHistory.Click += btnViewHistory_Click;// = FindViewById<Button>(Resource.Id.btnClockIn);
 
             btnChangeEmails.Click += BtnChangeEmails_Clicked;
-            txtWeekTotalHours.Click += setStats;
+            txtWeekTotalHours.Click += txtWeekTotalHours_Click;
             txtGrossPay.Click += setStats;
             txtMonthTotalHours.Click += setStats;
             RealClockPunch = ForReal.Checked;
@@ -262,15 +279,8 @@ namespace TimeTrackerUniversal
             {
                 using (SQLiteConnectionWithLock connection = SqlConnectionFactory.GetSQLiteConnectionWithREALLock())
                 {
-                    var hr = connection.Table<HourlyRate>().Any() ? connection.Table<HourlyRate>().Last() : null;
-                    if (hr is HourlyRate)
-                    {
-                        MainActivity.initRate = hr.Rate;
-                    }
-                    else
-                    {
-                        MainActivity.initRate = 0f;
-                    }
+                    MainActivity.initRate = connection.Table<HourlyRate>().Any() ? connection.Table<HourlyRate>().Last().Rate : 0;
+
                     var v = connection.Table<WorkInstance>().Any() ? connection.Table<WorkInstance>().Last() : null;
                     txtLastPunch.Text = v != null ? v.ClockIn == v.ClockOut ? $"In {v.ClockIn.ToString()}" : $"Out {v.ClockOut.ToString()}" : "NULL";
 
@@ -280,34 +290,78 @@ namespace TimeTrackerUniversal
             {
                 txtMainOut.Text = $"ERR {Ex.Message}";
             }
-
+            currentHours = false;
         }
+
+        private void txtWeekTotalHours_Click(object sender, EventArgs e)
+        {
+            currentHours = !currentHours;
+            setStats(null, EventArgs.Empty);
+        }
+
         void setStats(object sender, EventArgs args)
         {
-            //backup db
-          
-            string backupDir = "/sdcard/";
-            if (fresh)
-            {
-                if (!Directory.Exists(backupDir)) Directory.CreateDirectory(backupDir);
-                if (!File.Exists(Path.Combine(backupDir, SqlConnectionFactory.fileName)))
-                    File.Create(Path.Combine(backupDir, SqlConnectionFactory.fileName));
-                if (File.Exists(SqlConnectionFactory.FULLDBFILEPATH))
-                    File.Copy(SqlConnectionFactory.FULLDBFILEPATH, Path.Combine(backupDir, SqlConnectionFactory.fileName), true);
-                fresh = false;
-            }
-            Toast.MakeText(ApplicationContext, "DB copied!!",ToastLength.Short).Show();
-
+            //if(sender is string && (string)sender=="Current")
+            //{
+            //    // how many hours so far today?
+            //}
+            CopyDB();
+            //Toast.MakeText(ApplicationContext, "DB copied!!", ToastLength.Short).Show();
+            float totalFromPeriod = 0f;
             string na = string.Empty;
             Helper.SetWeekFrame(ref TimeIntervalBegin, ref TimeIntervalEnd);
-            txtWeekTotalHours.Text = string.Empty + String.Format("{0:0.00}", Helper.GetTotalHoursForTimePeriod(TimeIntervalBegin, TimeIntervalEnd, ref na));
+            var weekhrs = Helper.GetTotalHoursForTimePeriod(TimeIntervalBegin, TimeIntervalEnd, ref na, ref totalFromPeriod);
+            if (currentHours)
+            {
+                // how many our so far today
+                weekhrs += TodaysHours();
+            }
+            txtWeekTotalHours.Text = string.Empty + String.Format("{0:0.00}", weekhrs);
             TimeIntervalBegin = Convert.ToDateTime(MainActivity.GetLocalTime().Month + "/" + "01" + "/" + MainActivity.GetLocalTime().Year);
             TimeIntervalEnd = Convert.ToDateTime((MainActivity.GetLocalTime().Month < 12 ? MainActivity.GetLocalTime().Month + 1 : 1) + "/" + "01" + "/" + (MainActivity.GetLocalTime().Month < 12 ? MainActivity.GetLocalTime().Year : MainActivity.GetLocalTime().Year + 1));
 
             string grossPayStr = string.Empty;
-            float hrs = Helper.GetTotalHoursForTimePeriod(TimeIntervalBegin, TimeIntervalEnd, ref grossPayStr);
+            float hrs = Helper.GetTotalHoursForTimePeriod(TimeIntervalBegin, TimeIntervalEnd, ref grossPayStr, ref totalFromPeriod);
+
+            grossPayStr = string.Format("${0:f}", (Gross_net ? totalFromPeriod : totalFromPeriod * .795));
+
             txtMonthTotalHours.Text = string.Empty + String.Format("{0:0.00}", hrs);
-            txtGrossPay.Text = string.Format("{0:f}", grossPayStr); ;
+            txtGrossPay.Text = grossPayStr; ;
+
+            Gross_net = !Gross_net;
+
+        }
+        private static float TodaysHours()
+        {
+            using (SQLiteConnectionWithLock connection = SqlConnectionFactory.GetSQLiteConnectionWithREALLock())
+            {
+                try
+                {
+                    DateTime oneDayAgo = DateTime.Now.ToLocalTime().AddDays(-1);
+                    var today = connection.Table<WorkInstance>().FirstOrDefault(x => x.IsValid && x.ClockIn == x.ClockOut && x.ClockIn >= oneDayAgo);
+                    if (today != null)
+                    {
+                        //TimeSpan.TicksPerDay
+                        TimeSpan diff = DateTime.Now.ToLocalTime() - today.ClockIn;
+                        var hrs = diff.Hours + (diff.Minutes / 60f);
+                        Log.Info("HOURSSS", hrs.ToString());
+                        return hrs;
+                    }
+                    return 0f;
+                }
+                catch (Exception ex)
+                {
+                    Log.Error("ERRORRR", $"{ex}");
+                    Android.Widget.Toast.MakeText(Application.Context, $"{ex}", Android.Widget.ToastLength.Long).Show();
+                    return 0f;
+                }
+            }
+        }
+        private static bool _gross_net;
+        private static bool currentHours;
+        public static bool Gross_net
+        {
+            get => _gross_net; set => _gross_net = value;
         }
         public void ButtonClockedInOut_Handler(object sender, EventArgs e)
         {
@@ -323,6 +377,51 @@ namespace TimeTrackerUniversal
             output += "  Time to run " + ((System.Environment.TickCount & Int32.MaxValue) - start);
             SetOutput(output);
 
+        }
+
+        public static void CopyDB()
+        {
+            //backup db
+            string backupDir = "/sdcard/";
+            string fullFileName = Path.Combine(backupDir, GetDigitDate() + SqlConnectionFactory.fileName);
+
+            if (!Directory.Exists(backupDir)) Directory.CreateDirectory(backupDir);
+            if (!File.Exists(fullFileName))
+            {
+                var fs = File.Create(fullFileName);
+                //fs.
+            }
+            //copy
+            if (File.Exists(SqlConnectionFactory.FULLDBFILEPATH))
+            {
+                File.Copy(SqlConnectionFactory.FULLDBFILEPATH, fullFileName, true);
+
+                //purge old copies
+                var files = GetFileNamesOlderThan_Days(backupDir, "*.db3", -7);
+                foreach (var item in files)
+                {
+                    File.Delete(Path.Combine(backupDir, item));
+                }
+            }
+
+
+        }
+        private static long DaysInTicks(int days = 1)
+        {
+            return DateTime.Now.AddDays(days).ToLocalTime().Ticks - DateTime.Now.ToLocalTime().Ticks;
+        }
+        private static string[] GetFileNamesOlderThan_Days(string path, string filter, int days = 7)
+        {
+            var files = Directory.GetFiles(path, filter).Where(x => File.GetLastWriteTime(x) < DateTime.Now.AddDays(days).ToLocalTime()).ToArray();
+            for (int i = 0; i < files.Length; i++)
+                files[i] = Path.GetFileName(files[i]);
+            return files;
+        }
+        public static string GetDigitDate(int daysToAdd = 0)
+        {
+            return $"{DateTime.Now.AddDays(daysToAdd).ToLocalTime().Month.ToString("00")}" +
+                $"{DateTime.Now.AddDays(daysToAdd).ToLocalTime().Day.ToString("00")}" +
+                $"{DateTime.Now.AddDays(daysToAdd).ToLocalTime().Year}";
         }
         public static DateTime GetLocalTime()
         {

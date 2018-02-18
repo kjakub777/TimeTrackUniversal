@@ -5,7 +5,7 @@ namespace TimeTrackerUniversal.Database
 {
     public class SqlConnectionFactory
     {
-        public static string fileName = "TimeTrackerUniversalFinal.db3";
+        public static string fileName { get => "TimeDB.db3"; }
 
         public static string fullPath = System.IO.Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal), "db");
         public static string FULLDBFILEPATH = Path.Combine(fullPath, fileName);

@@ -19,8 +19,6 @@ namespace TimeTrackerUniversal.Assets
     class Helper
     {
 
-       
-
         public static bool SetWeekFrame(ref DateTime TimeIntervalBegin, ref DateTime TimeIntervalEnd)
         {
             DayOfWeek dayOfWeek = MainActivity.GetLocalTime().DayOfWeek;
@@ -40,9 +38,9 @@ namespace TimeTrackerUniversal.Assets
         }
 
 
-        public static float GetTotalHoursForTimePeriod(DateTime TimeIntervalBegin,DateTime TimeIntervalEnd, ref string grossPayStr)
+        public static float GetTotalHoursForTimePeriod(DateTime TimeIntervalBegin, DateTime TimeIntervalEnd, ref string grossPayStr, ref float totalFromPeriod)
         {
-            float gross = 0f;
+            double gross = 0f;
             float Hours = 0f;
             object[] args = { true, TimeIntervalBegin, TimeIntervalEnd };
             using (SQLiteConnectionWithLock connection = SqlConnectionFactory.GetSQLiteConnectionWithREALLock())
@@ -54,20 +52,18 @@ namespace TimeTrackerUniversal.Assets
                     {
                         var th = y.TotalHours;
                         Hours += th;
-                        gross += th * y.HourlyRate;
+                        gross += th * y.HourlyRate;/// (gross_net ? th * y.HourlyRate : th * y.HourlyRate * 0.79);
                     });
-                    // Hours = connection.Table<WorkInstance>().Where(x => x.IsValid && x.Date >= TimeIntervalBegin && x.Date < TimeIntervalEnd).Sum(x => x.getTotalHours());
-                    // gross = connection.Table<WorkInstance>().Where(x => x.IsValid && x.Date >= TimeIntervalBegin && x.Date < TimeIntervalEnd).Sum(x => x.getTotalHours());
-
-                    //List<WorkInstance> dt = connection.Query<WorkInstance>("SELECT * FROM WorkInstance where IsValid = ? AND Date >= ? AND Date < ?", args).ToList();
-                    // txtGrossPay.Text = $"${gross}";
+                    totalFromPeriod =(float) gross;
                     grossPayStr = string.Format("${0:f}", gross);
                 }
-                catch (Exception  )
+                catch (Exception)
                 {
-                  //  Toast.MakeText(ApplicationContext, "DB copied!!", ToastLength.Short).Show();
+                    //  Toast.MakeText(ApplicationContext, "DB copied!!", ToastLength.Short).Show();
                 }
+               // finally {     gross_net = !gross_net;}
             }
+        
             return Hours;
         }
     }

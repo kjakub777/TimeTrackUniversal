@@ -28,7 +28,7 @@ namespace TimeTrackerUniversal.Database.Schema
         }
         public override string ToString()
         {
-            return $"Oid={Oid.ToString()},Date={Date.ToString()}, ClockIn={ClockIn.ToString()}, ClockOut={ClockOut.ToString()} TotalHours={ TotalHours.ToString()}, HourlyRate={HourlyRate.ToString()} | ";
+            return $"\n{Oid.ToString()} | Date={Date.ToString()} |In {ClockIn.ToString()} |out {ClockOut.ToString()} |hrs { TotalHours.ToString()}, |rt {HourlyRate.ToString()}";
         }
 
         public DateTime ClockIn
@@ -60,24 +60,7 @@ namespace TimeTrackerUniversal.Database.Schema
             }
             set
             {
-                using (SQLiteConnectionWithLock connection = SqlConnectionFactory.GetSQLiteConnectionWithREALLock())
-                {
-                    HourlyRate hr = connection.Table<HourlyRate>().Last();
-                    if (hr == null || hr.Rate != value)
-                    {
-                        connection.Insert(new HourlyRate()
-                        {
-                            //	Date = MainActivity.GetLocalTime(),
-                            IsValid = true,
-                            Rate = value
-                        });
-                        _HourlyRate = value;
-                    }
-                    else
-                    {
-                        _HourlyRate = value;
-                    }
-                }
+                _HourlyRate = value;              
             }
         }
 

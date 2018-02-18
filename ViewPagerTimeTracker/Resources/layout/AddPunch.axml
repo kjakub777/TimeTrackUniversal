@@ -40,7 +40,7 @@
                 <TextView
                     android:text="Enter Date mm/dd/yyyy"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="47.0dp"
                     android:id="@+id/enterDatelbl"
                     android:gravity="center"
                     android:layout_weight="1"
@@ -52,7 +52,7 @@
                 <EditText
                     android:inputType="date"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="42.5dp"
                     android:id="@+id/dateDate"
                     android:text="01/01/2018"
                     android:gravity="center"
@@ -61,7 +61,8 @@
                     android:layout_margin="2sp"
                     android:textColor="@android:color/darker_gray"
                     android:selectAllOnFocus="true"
-                    android:backgroundTint="#ff165074" />
+                    android:backgroundTint="#ff165074"
+                    android:layout_marginBottom="0.0dp" />
             </LinearLayout>
             <LinearLayout
                 android:orientation="vertical"
@@ -141,6 +142,18 @@
                         android:background="@android:drawable/alert_light_frame"
                         android:textColor="@android:color/darker_gray"
                         android:backgroundTint="#ff165074" />
+                    <CheckBox
+                        android:text="Force"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:id="@+id/chkForce"
+                        android:checked="false"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:background="@android:drawable/alert_light_frame"
+                        android:textColor="@android:color/darker_gray"
+                        android:backgroundTint="#ff165074"
+                        android:padding="2dp" />
                 </LinearLayout>
                 <Button
                     android:text="Enter"

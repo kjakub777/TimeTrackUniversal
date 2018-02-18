@@ -17,6 +17,7 @@ namespace TimeTrackerUniversal
         Button btnPunch; 
         EditText dateDate;
         CheckBox IsClockIn;
+        CheckBox chkForce;
         CheckBox IsClockOut;
         TextView punchOut;
         TimePicker timePickIn;
@@ -50,7 +51,7 @@ namespace TimeTrackerUniversal
                         if (IsClockIn.Checked)
                         {
 
-                            if (wi.ClockIn != wi.ClockOut)
+                            if ((wi.ClockIn != wi.ClockOut) || chkForce.Checked)
                             {
                                 //System.Globalization.Calendar.CurrentEra;                                                                    //String.Format("{0:HH:mm:ss}", wi.ClockIn)
                                 DateTime dateTime = new DateTime(date.Year, date.Month, date.Day, timePickIn.Hour, timePickIn.Minute, 0, 0, DateTimeKind.Local);
@@ -76,7 +77,7 @@ namespace TimeTrackerUniversal
                         }
                         else if (IsClockOut.Checked)
                         {
-                            if (wi.ClockIn == wi.ClockOut)
+                            if (wi.ClockIn == wi.ClockOut || chkForce.Checked)
                             {
                                 DateTime dateTime = new DateTime(date.Year, date.Month, date.Day, timePickOut.Hour, timePickOut.Minute, 0, 0, DateTimeKind.Local);
                                 DateTime timeout = MainActivity.GetLocalTime(dateTime);
@@ -114,6 +115,7 @@ namespace TimeTrackerUniversal
             timePickIn = FindViewById<TimePicker>(Resource.Id.timePickIn);
             timePickOut = FindViewById<TimePicker>(Resource.Id.timePickOut);
             IsClockIn = FindViewById<CheckBox>(Resource.Id.IsClockIn);
+            chkForce = FindViewById<CheckBox>(Resource.Id.chkForce);
             IsClockOut = FindViewById<CheckBox>(Resource.Id.IsClockOut);
 
             DateTime dt = MainActivity.GetLocalTime();//.Month
