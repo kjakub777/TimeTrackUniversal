@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:minWidth="25px"
+    android:minHeight="25px"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/scrollView22"
+    tools:actionBarNavMode="tabs"
+    android:background="#6D7D7B">
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/linearLayout1V"
+        tools:gridSpec="1|4|#0093eeff|K:#ee8700ff:72,l|S:#00ff40ff:16,0,l:16,56,l:16,0,r"
+        android:scrollbarAlwaysDrawVerticalTrack="true"
+        android:scrollbars="vertical"
+        android:scrollbarThumbVertical="@android:drawable/status_bar_item_background"
+        android:scrollbarStyle="insideInset"
+        android:scrollbarSize="15sp"
+        android:alpha="1">
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:showDividers="none"
+            android:layout_margin="5sp"
+            android:layout_weight="1">
+            <DatePicker
+                android:id="@+id/datePicker"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:minWidth="25px"
+                android:minHeight="25px"
+                android:background="#6D7D7B"
+                android:alpha="1" />
+            <TimePicker
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/timePicker"
+                android:layout_weight="1"
+                android:padding="5sp" />
+        </LinearLayout>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="34.5dp"
+            android:id="@+id/txtOut"
+            android:minHeight="20dp"
+            android:layout_marginBottom="15dp"
+            android:layout_marginTop="5dp"
+            android:background="@android:drawable/edit_text"
+            android:textColor="#FF000000"
+            android:visibility="gone" />
+        <Button
+            android:text="Ok"
+            android:layout_width="match_parent"
+            android:layout_height="50.5dp"
+            android:id="@+id/btnExit"
+            android:textAllCaps="false"
+            android:alpha="1"
+            android:background="@drawable/graysilvertrans"
+            android:height="35dp" />
+    </LinearLayout>
+</ScrollView>

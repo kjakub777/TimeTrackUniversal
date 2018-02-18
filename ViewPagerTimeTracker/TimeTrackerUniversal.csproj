@@ -164,7 +164,6 @@
   <ItemGroup>
     <Compile Include="Assets\ChangeEmailsActivity.cs" />
     <Compile Include="Assets\AddPunchActivity.cs" />
-    <Compile Include="Assets\EditPunchActivity - Copy.cs" />
     <Compile Include="Assets\EditPunchActivity.cs" />
     <Compile Include="Assets\Helper.cs" />
     <Compile Include="Assets\ViewHistoryActivity.cs" />
@@ -203,6 +202,9 @@
       <SubType>Designer</SubType>
     </AndroidResource>
     <AndroidResource Include="Resources\layout\EditDialog.axml" />
+    <AndroidResource Include="Resources\layout\PickDate.axml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\layout\Main.axml">

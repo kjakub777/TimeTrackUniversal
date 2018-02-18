@@ -67,22 +67,12 @@ namespace TimeTrackerUniversal
             deleteButtonPresses = 0;
 
             //var t = (TextView)sender;
-            long oid = e.Id; //t.Text.Substring(0, t.Text.IndexOf(" |"));
-                             //  Android.Widget.Toast.MakeText(this, $"Oid {oid}", Android.Widget.ToastLength.Long).Show();
-
+            long oid = e.Id; 
 
             dlgFinding = new Dialog(this);
             dlgFinding.SetContentView(Resource.Layout.EditDialog);
-            //@+id/txtOid
-            //@+id/txtDate
-            //@+id/txtClockIn
-            //@+id/txtClockOut
-            //@+id/txtRate
-            //@+id/txtHours
-            //@+id/btnSave
-            //@+id/btnOk
-            //spinner
-
+            //@+id/txtOid            //@+id/txtDate            //@+id/txtClockIn            //@+id/txtClockOut            //@+id/txtRate            //@+id/txtHours            //@+id/btnSave            //@+id/btnOk            //spinner
+            
             txtOid = dlgFinding.FindViewById<EditText>(Resource.Id.txtOid);
             txtDate = dlgFinding.FindViewById<EditText>(Resource.Id.txtDate);
             txtClockIn = dlgFinding.FindViewById<EditText>(Resource.Id.txtClockIn);
@@ -94,7 +84,7 @@ namespace TimeTrackerUniversal
             {
                 try
                 {
-                    var v = connection.Table<WorkInstance>().FirstOrDefault(x => x.Oid == oid);// OrderByDescending(x => x.Oid).ToArray();
+                    var v = connection.Table<WorkInstance>().FirstOrDefault(x => x.Oid == oid);
                     txtOid.Text = v.Oid.ToString();
                     txtDate.Text = "" + v.Date;
                     txtClockIn.Text = v.ClockIn.ToString();
@@ -103,7 +93,7 @@ namespace TimeTrackerUniversal
                     txtHours.Text = "" + v.getTotalHours();
                     dlgFinding.SetTitle("Work Instance");
 
-                    Android.Widget.Toast.MakeText(this, $"POP wi???", Android.Widget.ToastLength.Long).Show();
+                 //   Android.Widget.Toast.MakeText(this, $"POP wi???", Android.Widget.ToastLength.Long).Show();
 
                 }
                 catch (Exception ex)
@@ -113,9 +103,7 @@ namespace TimeTrackerUniversal
                     ;
                 }
             }
-
-
-            System.Collections.ArrayList alFindings = new System.Collections.ArrayList();
+            
 
             Button btnOk = dlgFinding.FindViewById<Button>(Resource.Id.btnOk);
             Button btnSave = dlgFinding.FindViewById<Button>(Resource.Id.btnSave);
@@ -125,14 +113,10 @@ namespace TimeTrackerUniversal
             btnOk.Click += Dialog_btnOk_Click;
             btnDelete.Click += Dialog_btnDelete_Click ;
             btnSave.Click += Dialog_btnSave_Click;
-            
-            //new EventHandler(this.cmdOKFinding_Click);
+             
 
             dlgFinding.Show();
-
-            //dbcon.Close();
-            //var itempos = workInstanceList.SelectedItemPosition;//as WorkInstance;
-            // var wi = workInstanceList.g
+             
         }
 
         private void Dialog_btnSave_Click(object sender, EventArgs e)
@@ -165,7 +149,6 @@ namespace TimeTrackerUniversal
                     }
                     dlgFinding.OnBackPressed();
                     ((WorkInstanceAdapter)workInstanceList.Adapter).Update();// workInstanceList.RefreshDrawableState();
-
                     return;
                 }
                 catch (Exception ex)
@@ -180,7 +163,7 @@ namespace TimeTrackerUniversal
 
         private void Dialog_btnDelete_Click(object sender, EventArgs e)
         {
-            if (deleteButtonPresses++ > 2)
+            if (++deleteButtonPresses > 2)
             {
                 using (SQLiteConnectionWithLock connection = SqlConnectionFactory.GetSQLiteConnectionWithREALLock())
                 {
@@ -220,7 +203,6 @@ namespace TimeTrackerUniversal
         //  public void Dialog_btnOk_Click
         private void WorkInstanceList_Click(object sender, AdapterView.ItemClickEventArgs e)
         {
-
             try
             {
                 long oid = e.Id;
@@ -234,18 +216,11 @@ namespace TimeTrackerUniversal
                     }
                     catch { }
                 }
-
-
             }
             catch (Exception ex)
             {
-
                 Android.Widget.Toast.MakeText(this, ex.ToString(), Android.Widget.ToastLength.Long).Show(); ;
             }
         }
-
-
-
-
     }
 }

@@ -29,7 +29,7 @@ namespace TimeTrackerUniversal
         Button btnExit;// = FindViewById<Button>(Resource.Id.btnClockIn);
         Button btnSqlQuery;// button
         Button btnViewHistory;// = FindViewById<Button>(Resource.Id.btnClockIn);
-
+         
 
 
         private bool ClockInOut_Success = false;
@@ -105,7 +105,7 @@ namespace TimeTrackerUniversal
                 Toast.MakeText(ApplicationContext, exx.Message + "\t      " + exx.StackTrace, ToastLength.Long).Show();
                 Log.Error("EXCEPTION", exx.Message + "\t      " + exx.StackTrace);
             }
-            Toast.MakeText(ApplicationContext, "Need to Implement!!", ToastLength.Long).Show();
+            //Toast.MakeText(ApplicationContext, "Need to Implement!!", ToastLength.Long).Show();
         }
 
         private void btnSqlQuery_Click(object sender, EventArgs e)

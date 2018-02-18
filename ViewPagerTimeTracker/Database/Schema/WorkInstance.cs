@@ -28,7 +28,7 @@ namespace TimeTrackerUniversal.Database.Schema
         }
         public override string ToString()
         {
-            return $"\n{Oid.ToString()} | Date={Date.ToString()} |In {ClockIn.ToString()} |out {ClockOut.ToString()} |hrs { TotalHours.ToString()}, |rt {HourlyRate.ToString()}";
+            return $"\n{Oid.ToString()} -    {Date.ToString()}\nIN    {ClockIn.ToString()}\nOUT    {ClockOut.ToString()}\nHrs    { TotalHours.ToString()}     Rate  ${HourlyRate.ToString()}";
         }
 
         public DateTime ClockIn

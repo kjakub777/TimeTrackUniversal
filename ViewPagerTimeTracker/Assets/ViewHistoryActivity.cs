@@ -66,6 +66,11 @@ namespace TimeTrackerUniversal
                 }
                 int c = connection.CreateTable<HourlyRate>(CreateFlags.AutoIncPK);
 
+                var hr = new HourlyRate()
+                {
+                    Rate = 18.5f,
+                };
+                connection.Insert(hr);
                 c = connection.CreateTable<WorkInstance>(SQLite.CreateFlags.AutoIncPK);
 
                 c = connection.CreateTable<FromPassword>(SQLite.CreateFlags.AutoIncPK);
@@ -85,7 +90,7 @@ namespace TimeTrackerUniversal
                 txtImportOutput.Text = $"Deleted {id.ToString()}\n";
                 connection.Delete<WorkInstance>(id.Oid);
 
-                txtImportOutput.Text += "Last Punch: "+GetLastPunch();
+                txtImportOutput.Text += "Last Punch: " + GetLastPunch();
             }
         }
         private void btnExit_Click(object sender, EventArgs e)
@@ -107,15 +112,16 @@ namespace TimeTrackerUniversal
             {
                 Log.Error("EXCEPTION", exx.Message + "\t      " + exx.StackTrace);
             }
-
+            
         }
         private void btnImport_Click(object sender, EventArgs e)
-        {
+        {    
             if (!Imported)
             {
                 int recordCount = 0;
                 try
                 {
+                    //int dateCol = 0, inCol = 1, outCol = 2, rateCol = 3;
                     Imported = true;
                     btnImport.Text = "Now imported";
                     List<string> dateStrings = new List<string>();
@@ -123,66 +129,60 @@ namespace TimeTrackerUniversal
 
                     foreach (string line in lines)
                     {
-                        int localCount = 0;
                         string DATE = string.Empty;
                         string punchIN = string.Empty;
                         string punchOUT = string.Empty;
-                        string[] cols = line.Split(',');
-                        foreach (string col in cols)
+                        float rate = 0f;
+                        List<string> cols = line.Split(',').ToList(); ;
+
+                        DATE = !string.IsNullOrWhiteSpace(cols[0]) ? cols[0] : DateTime.Now.Date.ToString();
+                        punchIN = !string.IsNullOrWhiteSpace(cols[1]) ? cols[1] : DateTime.Now.Date.ToString();
+                        punchOUT = !string.IsNullOrWhiteSpace(cols[2]) ? cols[2] : DateTime.Now.Date.ToString();
+                        try
                         {
-                            if (!string.IsNullOrWhiteSpace(col))
-                            {
-                                if (localCount == 0)
-                                {
-                                    DATE = col;
-                                }
-                                else if ((localCount % 2) != 0) //in
-                                {
-                                    punchIN = col;
-                                }
-                                else if ((localCount % 2) == 0) //out
-                                {
-                                    try
-                                    {
-                                        using (SQLiteConnectionWithLock connection = SqlConnectionFactory.GetSQLiteConnectionWithREALLock())
-                                        {
-                                            punchOUT = col;
-                                            DateTime resDate;
-                                            DateTime.TryParse(DATE, out resDate);
-                                            DateTime resIn;
-                                            DateTime.TryParse(punchIN, out resIn);
-                                            DateTime resOut;
-                                            DateTime.TryParse(punchOUT, out resOut);
-                                            float hourlyRate = (connection.Table<HourlyRate>().Last()).Rate;
-                                            connection.Insert(new WorkInstance()
-                                            {
-                                                Date = resDate.Date,
-                                                ClockIn = Convert.ToDateTime(String.Format("{0:HH:mm:ss}", resIn)),
-                                                ClockOut = Convert.ToDateTime(String.Format("{0:HH:mm:ss}", resOut)),
-                                                HourlyRate = hourlyRate,
-                                                IsValid = true
-                                            });
-                                            connection.Commit();
-                                        }
-                                    }
-                                    catch (Exception exception)
-                                    {
-                                        Log.Error("EXCEPTION_INSERT_WI", exception.ToString());
-                                        Toast.MakeText(ApplicationContext, "Make Sure there is an hourly rate " + exception.ToString(), ToastLength.Long).Show();
-                                    }
-                                }
-                                localCount++;
-                            }
+                            rate = (float)Convert.ToDouble(!string.IsNullOrWhiteSpace(cols[3]) ? cols[3] : "18.5");
                         }
+                        catch (Exception)
+                        {
+                            rate = 18.5f;
+                        }
+                        try
+                        {
+                            using (SQLiteConnectionWithLock connection = SqlConnectionFactory.GetSQLiteConnectionWithREALLock())
+                            {
 
-                        //}
-                        recordCount += localCount;
-                    }
+                                DateTime resDate;
+                                DateTime.TryParse(DATE, out resDate);
+                                DateTime resIn;
+                                DateTime.TryParse(DATE + " " + punchIN, out resIn);
+                                DateTime resOut;
+                                DateTime.TryParse(DATE + " " + punchOUT, out resOut);
 
+                                connection.Insert(new WorkInstance()
+                                {
+                                    Date = resDate.Date,
+                                    ClockIn = Convert.ToDateTime(String.Format("{0:MM/dd/yyyy H:mm:ss zzz}", resIn)),
+                                    ClockOut = Convert.ToDateTime(String.Format("{0:MM/dd/yyyy H:mm:ss zzz}", resOut)),
+                                    HourlyRate = rate,
+                                    IsValid = true
+                                });
+                                connection.Commit();
+                            }
+                            recordCount++;
+
+                        }
+                        catch (Exception exception)
+                        {
+                            Log.Error("EXCEPTION_INSERT_WI", exception.ToString());
+                            Toast.MakeText(ApplicationContext, "Make Sure there is an hourly rate " + exception.ToString(), ToastLength.Long).Show();
+                        }
+                    }//foreach line
                 }
+
+
                 catch (Exception exception)
                 {
-                    txtImportOutput.Text = "Make Sure there is an hourly rate " + exception.ToString()+ "\nLast Punch: " + GetLastPunch(); 
+                    txtImportOutput.Text = "Make Sure there is an hourly rate " + exception.ToString() + "\nLast Punch: " + GetLastPunch();
                     Toast.MakeText(ApplicationContext, "Make Sure there is an hourly rate " + exception.ToString(), ToastLength.Long).Show();
                 }
                 txtImportOutput.Text = $"Imported {recordCount} workinstances from {txtFileName.Text}\n";
@@ -251,7 +251,7 @@ namespace TimeTrackerUniversal
             btnViewTimeframe.Click += btnViewTimeframe_Click;
 
             setTimeframes();
-           txtImportOutput.Text = GetLastPunch();
+            txtImportOutput.Text = GetLastPunch();
         }
         public string GetLastPunch()
         {
@@ -356,7 +356,7 @@ namespace TimeTrackerUniversal
                                 foreach (WorkInstance wi in workinstances)
                                 {
                                     lines.Add(String.Format("{0:MM/dd/yyyy}", wi.Date) + "," + String.Format("{0:HH:mm:ss}", wi.ClockIn) + "," + String.Format("{0:HH:mm:ss}", wi.ClockOut));
-                                    File.AppendAllText(path, String.Format("{0:MM/dd/yyyy}", wi.Date) + "," + String.Format("{0:HH:mm:ss}", wi.ClockIn) + "," + String.Format("{0:HH:mm:ss}", wi.ClockOut) + System.Environment.NewLine);
+                                    File.AppendAllText(path, String.Format("{0:MM/dd/yyyy}", wi.Date) + "," + String.Format("{0:HH:mm:ss}", wi.ClockIn) + "," + String.Format("{0:HH:mm:ss}", wi.ClockOut) + "," + wi.HourlyRate + System.Environment.NewLine);
                                     File.AppendAllText(pathsql, $"INSERT INTO WorkInstance(Date,ClockIn,ClockOut,IsValid,HourlyRate)VALUES({wi.Date.Ticks},{wi.ClockIn.Ticks},{wi.ClockOut.Ticks},1,{wi.HourlyRate});{System.Environment.NewLine}");
                                 }
                                 //canonly read in workinstances as csv for now, res have to be sql

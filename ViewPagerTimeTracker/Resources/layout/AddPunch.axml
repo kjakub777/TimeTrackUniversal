@@ -36,34 +36,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/linearLayout1"
-                android:background="@android:drawable/dialog_frame">
-                <TextView
-                    android:text="Enter Date mm/dd/yyyy"
-                    android:layout_width="match_parent"
-                    android:layout_height="47.0dp"
-                    android:id="@+id/enterDatelbl"
-                    android:gravity="center"
-                    android:layout_weight="1"
-                    android:padding="5sp"
-                    android:background="@android:color/darker_gray"
-                    android:layout_margin="2sp"
-                    android:textColor="@android:color/darker_gray"
-                    android:backgroundTint="#ff165074" />
-                <EditText
-                    android:inputType="date"
-                    android:layout_width="match_parent"
-                    android:layout_height="42.5dp"
-                    android:id="@+id/dateDate"
-                    android:text="01/01/2018"
-                    android:gravity="center"
-                    android:layout_weight="1"
-                    android:background="@android:drawable/editbox_dropdown_dark_frame"
-                    android:layout_margin="2sp"
-                    android:textColor="@android:color/darker_gray"
-                    android:selectAllOnFocus="true"
-                    android:backgroundTint="#ff165074"
-                    android:layout_marginBottom="0.0dp" />
-            </LinearLayout>
+                android:background="@android:drawable/dialog_frame" />
             <LinearLayout
                 android:orientation="vertical"
                 android:minWidth="25px"
@@ -76,47 +49,12 @@
                 android:alpha="0.8"
                 android:backgroundTint="#ff165074"
                 android:backgroundTintMode="add">
-                <TextView
-                    android:text="Enter Time IN"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/EnterTimeinlbl"
-                    android:gravity="center"
-                    android:layout_weight="1"
-                    android:padding="5sp"
-                    android:background="@android:color/darker_gray"
-                    android:layout_margin="5sp"
-                    android:textColor="@android:color/darker_gray"
-                    android:backgroundTint="#ff165074" />
-                <TimePicker
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/timePickIn"
-                    android:layout_weight="1"
-                    android:padding="5sp" />
-                <TextView
-                    android:text="Enter Time OUT"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/EnterTimeOutlbl"
-                    android:gravity="center"
-                    android:layout_weight="1"
-                    android:padding="5sp"
-                    android:layout_margin="5sp"
-                    android:background="#165074"
-                    android:textColor="@android:color/darker_gray" />
-                <TimePicker
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/timePickOut"
-                    android:layout_weight="1"
-                    android:padding="5sp" />
                 <LinearLayout
                     android:orientation="horizontal"
                     android:minWidth="25px"
                     android:minHeight="25px"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="110dp"
                     android:id="@+id/linearLayout3"
                     android:layout_margin="15sp"
                     android:background="@android:color/darker_gray">
@@ -158,14 +96,14 @@
                 <Button
                     android:text="Enter"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="50dp"
                     android:id="@+id/btnPunch"
                     android:textAllCaps="false"
                     android:background="@android:drawable/btn_default"
                     android:alpha="1" />
                 <TextView
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="50dp"
                     android:id="@+id/punchOut"
                     android:gravity="center"
                     android:text="_____"
@@ -177,7 +115,7 @@
                     android:text="Exit"
                     android:id="@+id/btnExitPass"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="50dp"
                     android:layout_margin="1px"
                     android:textAllCaps="false"
                     android:background="@android:drawable/btn_default" />
