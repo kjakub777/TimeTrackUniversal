@@ -1,4 +1,11 @@
-﻿using Android.Util;
+﻿
+using Android.Content;
+using Android.Graphics;
+using Android.Graphics.Drawables;
+using Android.Graphics.Drawables.Shapes;
+using Android.Views;
+
+using Android.Util;
 using SQLite;
 using System;
 using System.Linq;
@@ -87,5 +94,21 @@ namespace TimeTrackerUniversal
             }
         }//end mail
     };
+//using Android.App;
+//using Android.OS;
 
+//namespace DrawingRecipe
+//    {
+//        [Activity(Label = "Drawing Recipe", MainLauncher = true, Icon = "@drawable/icon")]
+//        public class Activity1 : Activity
+//        {
+//            protected override void OnCreate(Bundle bundle)
+//            {
+//                base.OnCreate(bundle);
+//                SetContentView(new MyOvalShape(this));
+//            }
+//        }
+//    }
+
+    
 }

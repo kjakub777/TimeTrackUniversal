@@ -6,7 +6,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/ editDialogRootLayout"
+    android:id="@+id/editDialogRootLayout"
     android:weightSum="2"
     tools:gridSpec="1|4|#0093eeff|K:#ee8700ff:72,l|S:#00ff40ff:16,0,l:16,56,l:16,0,r"
     android:background="#f2fcf2"

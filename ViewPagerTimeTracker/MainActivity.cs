@@ -1,4 +1,5 @@
-﻿using Android.App;
+﻿using Xamarin.Essentials;
+using Android.App;
 using Android.Content;
 using Android.OS;
 using Android.Util;
@@ -11,13 +12,14 @@ using System.Linq;
 using TimeTrackerUniversal.Assets;
 using TimeTrackerUniversal.Database;
 using TimeTrackerUniversal.Database.Schema;
+using Android.Views;
 
 namespace TimeTrackerUniversal
 {
     [Activity(Label = "TimeTrackerUniversal", MainLauncher = true, Icon = "@drawable/ttu")]
     public class MainActivity : Activity
     {
-
+        Vibrator vb;
         static readonly object _syncLock = new object();
         private static float initRate;
         public static string DB_PATH = string.Empty;
@@ -29,7 +31,6 @@ namespace TimeTrackerUniversal
         Button btnExit;// = FindViewById<Button>(Resource.Id.btnClockIn);
         Button btnSqlQuery;// button
         Button btnViewHistory;// = FindViewById<Button>(Resource.Id.btnClockIn);
-         
 
 
         private bool ClockInOut_Success = false;
@@ -50,177 +51,47 @@ namespace TimeTrackerUniversal
         TextView txtWeekTotalHours;// = FindViewById<TextView>(Resource.Id.txtCurrentPayRate);
         public string output = "..";
 
-        private void btnAddPunch_Click(object sender, EventArgs e)
+        //public boolean onTouch(View v, MotionEvent e) {
+        //    // TODO Auto-generated method stub
+        //    Vibrator vb = (Vibrator)getSystemService(Context.VIBRATOR_SERVICE);
+        //    vb.vibrate(100);
+        //    return false;
+        //}
+        //b.setOnTouchListener(new OnTouchListener()
+        //{
+
+        //    @Override
+
+
+        //});
+        protected override async void OnCreate(Bundle savedInstanceState)
         {
+            base.OnCreate(savedInstanceState);
+            Xamarin.Essentials.Platform.Init(this, savedInstanceState); // add this line to your code, it may also be called: bundle
+
+            Acr.UserDialogs.UserDialogs.Init(this);
+
             try
             {
-                lock (_syncLock)
+                var status = await Permissions.CheckStatusAsync<Permissions.StorageWrite>();
+                if (status == PermissionStatus.Denied)
                 {
-                    Intent intent = new Intent(this.ApplicationContext, typeof(AddPunchActivity));
-                    intent.SetFlags(ActivityFlags.ForwardResult);
-                    intent.SetFlags(ActivityFlags.ReceiverForeground);
-                    StartActivity(intent);
+                    // status = await Permissions.RequestAsync<Permissions.StorageRead>();
+                    status = await Permissions.RequestAsync<Permissions.StorageWrite>();
+                    status = await Permissions.CheckStatusAsync<Permissions.StorageRead>();
+                    if (status == PermissionStatus.Denied)
+                    {
+                        // status = await Permissions.RequestAsync<Permissions.StorageRead>(); 
+                        status = await Permissions.RequestAsync<Permissions.StorageRead>().ConfigureAwait(false);
+                    }
                 }
-            }
-            catch (Exception exx)
-            {
-                Log.Error("EXCEPTION", exx.Message + "\t      " + exx.StackTrace);
-            }
-
-        }
-
-        private void BtnChangeEmails_Clicked(object sender, EventArgs e)
-        {
-            try
-            {
-                lock (_syncLock)
-                {
-                    Intent intent = new Intent(this.ApplicationContext, typeof(ChangeEmailsActivity));
-                    intent.SetFlags(ActivityFlags.ForwardResult);
-                    intent.SetFlags(ActivityFlags.ReceiverForeground);
-                    StartActivity(intent);
-                }
-            }
-            catch (Exception exx)
-            {
-                Log.Error("EXCEPTION", exx.Message + "\t      " + exx.StackTrace);
-            }
-
-        }
-
-        private void btnEditPunch_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                lock (_syncLock)
-                {
-                    Intent intent = new Intent(this.ApplicationContext, typeof(EditPunchActivity));
-                    intent.SetFlags(ActivityFlags.ForwardResult);
-                    intent.SetFlags(ActivityFlags.ReceiverForeground);
-                    StartActivity(intent);
-                }
-            }
-            catch (Exception exx)
-            {
-                Toast.MakeText(ApplicationContext, exx.Message + "\t      " + exx.StackTrace, ToastLength.Long).Show();
-                Log.Error("EXCEPTION", exx.Message + "\t      " + exx.StackTrace);
-            }
-            //Toast.MakeText(ApplicationContext, "Need to Implement!!", ToastLength.Long).Show();
-        }
-
-        private void btnSqlQuery_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                lock (_syncLock)
-                {
-                    Intent intent = new Intent(this.ApplicationContext, typeof(RunSQLActivity));
-                    intent.SetFlags(ActivityFlags.ForwardResult);
-                    intent.SetFlags(ActivityFlags.ReceiverForeground);
-                    StartActivity(intent);
-                }
-            }
-            catch (Exception exx)
-            {
-                Log.Error("EXCEPTION", exx.Message + "\t      " + exx.StackTrace);
-            }
-        }
-
-        private void btnViewHistory_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                lock (_syncLock)
-                {
-                    Intent intent = new Intent(this.ApplicationContext, typeof(ViewHistoryActivity));
-                    intent.SetFlags(ActivityFlags.ForwardResult);
-                    intent.SetFlags(ActivityFlags.ReceiverForeground);
-                    StartActivity(intent);
-                }
-            }
-            catch (Exception exx)
-            {
-                Log.Error("EXCEPTION", exx.Message + "\t      " + exx.StackTrace);
-            }
-        }
-        private bool EmailTaskMethod()
-        {
-            try
-            {
-                output += EmailHelper.SendEmail(string.Empty, OUT, RealClockPunch, GetString);
-                return (!output.Contains("ERROR"));
             }
             catch (Exception ex)
             {
-                output += "Error: " + ex.Message;
-                return (false);
+
+                Acr.UserDialogs.UserDialogs.Instance.Alert($"{ex}");
+                Console.WriteLine($"{ex}");
             }
-        }
-        private void ExitDoer(object sender, EventArgs e)
-        {
-            System.Environment.Exit(0);
-        }
-
-        private void ForReal_CheckedChanged(object sender, CompoundButton.CheckedChangeEventArgs e)
-        {
-            RealClockPunch = ForReal.Checked;
-            Log.Error("Hourly", RealClockPunch ? "TRUE" : "FALSE");
-        }
-        private void SetOutput(string o)
-        {
-            lock (_syncLock)
-            {
-                txtMainOut.Text = o;
-            }
-        }
-
-        protected bool AfterEmailSent()
-        {
-            using (SQLiteConnectionWithLock connection = SqlConnectionFactory.GetSQLiteConnectionWithREALLock())
-            {
-                if (ClockInOut_Success)
-                {
-                    string fileName = "/sdcard/punches/ClockPunches.txt";
-                    string dirName = "/sdcard/punches";
-                    if (!Directory.Exists(dirName))
-                    {
-                        Directory.CreateDirectory(dirName);
-                    }
-                    if (!File.Exists(fileName))
-                    {
-                        File.Create(fileName);
-                    }
-                    string stamp = DateTime.Now.ToString() + "," + (OUT ? "OUT" : "IN") + "," + (RealClockPunch ? "REAL," + (connection.Table<EmailAddresses>().Where(x => x.EmailType == 1).Last()).Email : "FAKE," + (connection.Table<EmailAddresses>().Where(x => x.EmailType == 2).Last()).Email) + "\n";
-                    File.AppendAllText(fileName, stamp);
-                    if (RealClockPunch)
-                    {
-                        if (!OUT)
-                        {//in
-
-                            float hourlyRate = (connection.Table<HourlyRate>().Last()).Rate;
-                            connection.Insert(new WorkInstance()
-                            {
-                                IsValid = true,
-                                Date = MainActivity.GetLocalTime().Date,
-                                HourlyRate = hourlyRate,
-                                ClockIn = MainActivity.GetLocalTime()
-                            });
-                        }
-                        else
-                        {
-                            WorkInstance wi = connection.Table<WorkInstance>().Last();
-                            wi.ClockOut = MainActivity.GetLocalTime();
-                            connection.Update(wi);
-                        }
-                    }
-                }
-            }
-            return true;
-        }
-
-        protected override void OnCreate(Bundle savedInstanceState)
-        {
-            base.OnCreate(savedInstanceState);
             Gross_net = true;
             // Set our view from the "main" layout resource
             SetContentView(Resource.Layout.Main);
@@ -245,7 +116,7 @@ namespace TimeTrackerUniversal
             btnExit = FindViewById<Button>(Resource.Id.btnExit);
             btnAddPunch = FindViewById<Button>(Resource.Id.btnAddPunch);
 
-
+            vb = (Vibrator)this.GetSystemService(VibratorService);
             btnClockIn.Click += ButtonClockedInOut_Handler;// delegate { btnClockIn_Clicked(); };
             btnClockOut.Click += ButtonClockedInOut_Handler;// delegate { btnClockIn_Clicked(); };
             btnAddPunch.Click += btnAddPunch_Click;// delegate { btnClockIn_Clicked(); };
@@ -255,7 +126,8 @@ namespace TimeTrackerUniversal
             btnSqlQuery.Click += btnSqlQuery_Click;// = FindViewById<Button>(Resource.Id.btnClockIn);
             btnViewHistory.Click += btnViewHistory_Click;// = FindViewById<Button>(Resource.Id.btnClockIn);
 
-            btnChangeEmails.Click += BtnChangeEmails_Clicked;
+            //btnChangeEmails.Touch += MyHaptic;
+            btnChangeEmails.Touch += BtnChangeEmails_Clicked;
             txtWeekTotalHours.Click += txtWeekTotalHours_Click;
             txtGrossPay.Click += setStats;
             txtMonthTotalHours.Click += setStats;
@@ -292,15 +164,206 @@ namespace TimeTrackerUniversal
             }
             currentHours = false;
         }
+        private void btnAddPunch_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                vb.Vibrate(50);
+                lock (_syncLock)
+                {
+                    Intent intent = new Intent(this.ApplicationContext, typeof(AddPunchActivity));
+                    intent.SetFlags(ActivityFlags.ForwardResult);
+                    intent.SetFlags(ActivityFlags.ReceiverForeground);
+                    StartActivity(intent);
+                }
+            }
+            catch (Exception exx)
+            {
+                Log.Error("EXCEPTION", exx.Message + "\t      " + exx.StackTrace);
+            }
+
+        }
+
+        private void BtnChangeEmails_Clicked(object sender, EventArgs e)
+        {
+            try
+            {
+                vb.Vibrate(50);
+                lock (_syncLock)
+                {
+                    Intent intent = new Intent(this.ApplicationContext, typeof(ChangeEmailsActivity));
+                    intent.SetFlags(ActivityFlags.ForwardResult);
+                    intent.SetFlags(ActivityFlags.ReceiverForeground);
+                    StartActivity(intent);
+                }
+            }
+            catch (Exception exx)
+            {
+                Log.Error("EXCEPTION", exx.Message + "\t      " + exx.StackTrace);
+            }
+
+        }
+
+        private void btnEditPunch_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                vb.Vibrate(50);
+                lock (_syncLock)
+                {
+                    Intent intent = new Intent(this.ApplicationContext, typeof(EditPunchActivity));
+                    intent.SetFlags(ActivityFlags.ForwardResult);
+                    intent.SetFlags(ActivityFlags.ReceiverForeground);
+                    StartActivity(intent);
+                }
+            }
+            catch (Exception exx)
+            {
+                Toast.MakeText(ApplicationContext, exx.Message + "\t      " + exx.StackTrace, ToastLength.Long).Show();
+                Log.Error("EXCEPTION", exx.Message + "\t      " + exx.StackTrace);
+            }
+            //Toast.MakeText(ApplicationContext, "Need to Implement!!", ToastLength.Long).Show();
+        }
+
+        private void btnSqlQuery_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                vb.Vibrate(50);
+                lock (_syncLock)
+                {
+                    Intent intent = new Intent(this.ApplicationContext, typeof(RunSQLActivity));
+                    intent.SetFlags(ActivityFlags.ForwardResult);
+                    intent.SetFlags(ActivityFlags.ReceiverForeground);
+                    StartActivity(intent);
+                }
+            }
+            catch (Exception exx)
+            {
+                Log.Error("EXCEPTION", exx.Message + "\t      " + exx.StackTrace);
+            }
+        }
+
+        private void btnViewHistory_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                vb.Vibrate(50);
+                lock (_syncLock)
+                {
+                    Intent intent = new Intent(this.ApplicationContext, typeof(ViewHistoryActivity));
+                    intent.SetFlags(ActivityFlags.ForwardResult);
+                    intent.SetFlags(ActivityFlags.ReceiverForeground);
+                    StartActivity(intent);
+                }
+            }
+            catch (Exception exx)
+            {
+                Log.Error("EXCEPTION", exx.Message + "\t      " + exx.StackTrace);
+            }
+        }
+        private bool EmailTaskMethod()
+        {
+            try
+            {
+                output += EmailHelper.SendEmail(string.Empty, OUT, RealClockPunch, GetString);
+                return (!output.Contains("ERROR"));
+            }
+            catch (Exception ex)
+            {
+                output += "Error: " + ex.Message;
+                return (false);
+            }
+        }
+        private void ExitDoer(object sender, EventArgs e)
+        {
+            vb.Vibrate(50);
+            System.Environment.Exit(0);
+        }
+
+        private void ForReal_CheckedChanged(object sender, CompoundButton.CheckedChangeEventArgs e)
+        {
+            RealClockPunch = ForReal.Checked;
+            Log.Error("Hourly", RealClockPunch ? "TRUE" : "FALSE");
+        }
+        private void SetOutput(string o)
+        {
+            lock (_syncLock)
+            {
+                txtMainOut.Text = o;
+            }
+        }
+        public override void OnRequestPermissionsResult(int requestCode, string[] permissions, Android.Content.PM.Permission[] grantResults)
+        {
+            Xamarin.Essentials.Platform.OnRequestPermissionsResult(requestCode, permissions, grantResults);
+
+            base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+        protected bool AfterEmailSent()
+        {
+            using (SQLiteConnectionWithLock connection = SqlConnectionFactory.GetSQLiteConnectionWithREALLock())
+            {
+                if (ClockInOut_Success)
+                {
+                    string stamp = DateTime.Now.ToString() + "," + (OUT ? "OUT" : "IN") + "," + (RealClockPunch ? "REAL," + (connection.Table<EmailAddresses>().Where(x => x.EmailType == 1).Last()).Email : "FAKE," + (connection.Table<EmailAddresses>().Where(x => x.EmailType == 2).Last()).Email) + "\n";
+
+                    string fileName = "/sdcard/punches/ClockPunches.txt";
+                    string dirName = "/sdcard/punches";
+                    if (!Directory.Exists(dirName))
+                    {
+                        Directory.CreateDirectory(dirName);
+                    }
+                    if (!File.Exists(fileName))
+                    {
+                        using (var writer = new StreamWriter(File.Create(fileName)))
+                        {
+                            writer.WriteLine(stamp);
+                        }
+                    }
+                    else
+                    {
+                        using (var writer = new StreamWriter(File.OpenWrite(fileName)))
+                        {
+                            writer.WriteLine(stamp);
+                        }
+
+                    }
+                    if (RealClockPunch)
+                    {
+                        if (!OUT)
+                        {//in
+
+                            float hourlyRate = (connection.Table<HourlyRate>().Last()).Rate;
+                            connection.Insert(new WorkInstance()
+                            {
+                                IsValid = true,
+                                Date = MainActivity.GetLocalTime().Date,
+                                HourlyRate = hourlyRate,
+                                ClockIn = MainActivity.GetLocalTime()
+                            });
+                        }
+                        else
+                        {
+                            WorkInstance wi = connection.Table<WorkInstance>().Last();
+                            wi.ClockOut = MainActivity.GetLocalTime();
+                            connection.Update(wi);
+                        }
+                    }
+                }
+            }
+            return true;
+        }
 
         private void txtWeekTotalHours_Click(object sender, EventArgs e)
         {
+            vb.Vibrate(50);
             currentHours = !currentHours;
             setStats(null, EventArgs.Empty);
         }
 
         void setStats(object sender, EventArgs args)
         {
+            vb.Vibrate(50);
             //if(sender is string && (string)sender=="Current")
             //{
             //    // how many hours so far today?
@@ -365,6 +428,7 @@ namespace TimeTrackerUniversal
         }
         public void ButtonClockedInOut_Handler(object sender, EventArgs e)
         {
+            vb.Vibrate(50);
             output = " ";
 
             Button ib = ((Button)sender);
@@ -382,29 +446,38 @@ namespace TimeTrackerUniversal
         public static void CopyDB()
         {
             //backup db
-            string backupDir = "/sdcard/";
-            string fullFileName = Path.Combine(backupDir, GetDigitDate() + SqlConnectionFactory.fileName);
-
-            if (!Directory.Exists(backupDir)) Directory.CreateDirectory(backupDir);
-            if (!File.Exists(fullFileName))
+            try
             {
-                var fs = File.Create(fullFileName);
-                //fs.
-            }
-            //copy
-            if (File.Exists(SqlConnectionFactory.FULLDBFILEPATH))
-            {
-                File.Copy(SqlConnectionFactory.FULLDBFILEPATH, fullFileName, true);
+                string backupDir = "/sdcard/";
+                string fullFileName = Path.Combine(backupDir, GetDigitDate() + SqlConnectionFactory.fileName);
 
-                //purge old copies
-                var files = GetFileNamesOlderThan_Days(backupDir, "*.db3", -7);
-                foreach (var item in files)
+                if (!Directory.Exists(backupDir)) Directory.CreateDirectory(backupDir);
+                if (!File.Exists(fullFileName))
                 {
-                    File.Delete(Path.Combine(backupDir, item));
+                    var fs = File.Create(fullFileName);
+                    //fs.
                 }
+                //copy
+                if (File.Exists(SqlConnectionFactory.FULLDBFILEPATH))
+                {
+                    File.Copy(SqlConnectionFactory.FULLDBFILEPATH, fullFileName, true);
+
+                    //purge old copies
+                    var files = GetFileNamesOlderThan_Days(backupDir, "*.db3", -7);
+                    foreach (var item in files)
+                    {
+                        File.Delete(Path.Combine(backupDir, item));
+                    }
+                }
+
+
             }
+            catch (Exception ex)
+            {
+                //  throw;
+                Acr.UserDialogs.UserDialogs.Instance.Toast("Couldn't back up!!");
 
-
+            }
         }
         private static long DaysInTicks(int days = 1)
         {
